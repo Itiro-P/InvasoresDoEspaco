@@ -5,7 +5,8 @@
 #include <stdexcept>
 #include <string>
 
-janela::janela(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte) : resolucao(resolucao), vidas(fonte), pontos(fonte) {
+janela::janela(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais, const int pontosIniciais) 
+: vidas(vidasIniciais), pontos(pontosIniciais), resolucao(resolucao), textoVidas(fonte), textoPontos(fonte) {
     try {
         if (!fonte.openFromFile(caminhoFonte.string())) {
             throw JanelaException("erro ao carregar a fonte " + caminhoFonte.string() + ".\nVerifique se o arquivo existe.\n");
@@ -15,18 +16,22 @@ janela::janela(const sf::Vector2u& resolucao, const std::filesystem::path& camin
             throw JanelaException("erro ao carregar o icone " + caminhoIcone.string() + ".\nVerifique se o arquivo existe.\n");
             std::cin.get();
         }
-        instanciaJanela.create(sf::VideoMode({resolucao.x, resolucao.y}), "Invasores do Espaco", sf::Style::Close);
+        instanciaJanela.create(sf::VideoMode({resolucao.x, resolucao.y}), L"Invasores do Espaço", sf::Style::Close);
         instanciaJanela.setIcon(icone);
 
-        vidas.setString("Vidas: 0");
-        vidas.setFillColor(sf::Color::White);
-        vidas.setCharacterSize(static_cast<unsigned int>(resolucao.x / 20));
+        textoVidas.setString("Vidas: " + std::to_string(vidas));
+        textoVidas.setFillColor(sf::Color::White);
+        textoVidas.setCharacterSize(static_cast<unsigned int>(resolucao.x / 50));
+        textoVidas.setPosition(sf::Vector2f({static_cast<float>(resolucao.x*0.85) , 10.f}));
 
-        pontos.setString("Pontuação: 0");
-        pontos.setFillColor(sf::Color::White);
-        pontos.setCharacterSize(static_cast<unsigned int>(resolucao.x / 20));
+
+        textoPontos.setString("Pontos: " + std::to_string(pontos));
+        textoPontos.setFillColor(sf::Color::White);
+        textoPontos.setCharacterSize(static_cast<unsigned int>(resolucao.x / 50));
+        textoPontos.setPosition(sf::Vector2f({20.f , 10.f}));
+
     } catch (const JanelaException& e) {
-        std::cerr << "Erro ao inicializar a janela: " << e.what() << std::endl;
+        std::cerr << L"Erro ao inicializar a janela: " << e.what() << std::endl;
         std::cin.get();
         throw;
     }
@@ -54,6 +59,8 @@ void janela::eventos() {
 
 void janela::desenhar() {
     instanciaJanela.clear();
+    instanciaJanela.draw(textoVidas);
+    instanciaJanela.draw(textoPontos);
     instanciaJanela.display();
 }
 
