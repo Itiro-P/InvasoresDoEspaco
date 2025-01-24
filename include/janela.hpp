@@ -1,8 +1,8 @@
 #pragma once
 
+#include <erroManuseio.hpp>
 #include <SFML/Graphics.hpp>
 #include <filesystem>
-#include <stdexcept>
 #include <string>
 
 class janela {
@@ -20,9 +20,4 @@ class janela {
     bool getEstado() const&;
     void eventos();
     void desenhar();
-};
-
-class JanelaException : public std::runtime_error {
-    public:
-    explicit JanelaException(const std::string& mensagem) : std::runtime_error(mensagem) {}
 };

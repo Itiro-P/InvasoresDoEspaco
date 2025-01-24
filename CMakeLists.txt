@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.5)
 project(InvasoresDoEspaco LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -17,6 +17,7 @@ add_executable(main
     src/jogador.cpp
     src/janela.cpp
     src/inimigo.cpp
+    src/erroManuseio.cpp
 )
 
 # Diretório com os arquivos de recursos
