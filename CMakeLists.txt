@@ -12,6 +12,23 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp)
+add_executable(main 
+    src/main.cpp
+    src/jogador.cpp
+    src/janela.cpp
+    src/inimigo.cpp
+)
+
+# Diretório com os arquivos de recursos
+set(RESOURCES_DIR ${CMAKE_SOURCE_DIR}/misc)
+
+# Copiar recursos para o diretório de saída
+add_custom_command(
+    TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${RESOURCES_DIR} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/misc
+)
+
 target_compile_features(main PRIVATE cxx_std_17)
-target_link_libraries(main PRIVATE SFML::Graphics SFML::System SFML::Window SFML::Audio)
+target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(main PRIVATE SFML::Graphics SFML::System SFML::Audio)
