@@ -29,7 +29,7 @@ bool janela::getEstado() const& {
     return instanciaJanela.isOpen();
 }
 
-void janela::eventos(std::optional<jogador> jogador) {
+void janela::eventos(std::optional<std::reference_wrapper<jogador>> jogador) {
     instanciaJanela.handleEvents(
         [this](const sf::Event::Closed) { instanciaJanela.close(); },
         [this, &jogador](const sf::Event::KeyPressed tecla) {
@@ -38,20 +38,20 @@ void janela::eventos(std::optional<jogador> jogador) {
                 instanciaJanela.close();
                 break;
             case sf::Keyboard::Scancode::Left:
-                if(jogador.has_value()) jogador->mover(esquerda);
+                if(jogador.has_value()) jogador->get().mover(esquerda);
                 break;
             case sf::Keyboard::Scancode::Right:
-                if(jogador.has_value()) jogador->mover(direita);
+                if(jogador.has_value()) jogador->get().mover(direita);
                 break;
             }
         }
     );
 }
 
-void janela::desenhar(const std::optional<jogador>& jogador) {
+void janela::desenhar(const std::optional<std::reference_wrapper<jogador>>& jogador) {
     instanciaJanela.clear();
     instanciaJanela.draw(textoVidas);
     instanciaJanela.draw(textoPontos);
-    if(jogador.has_value()) instanciaJanela.draw(jogador->getSprite());
+    if(jogador.has_value()) instanciaJanela.draw(jogador->get().getSprite());
     instanciaJanela.display();
 }

@@ -4,11 +4,11 @@
 #include <SFML/System.hpp>
 #include <string>
 
-jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite)
-: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite), escala(resolucaoSistema.x/150.f) {
-    limites[esquerda] = static_cast<float>(resolucaoSistema.x*0.85+1);
-    limites[direita] = static_cast<float>(resolucaoSistema.x*0.15);
-    velocidade = static_cast<float>(resolucaoSistema.x/10);
+jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps)
+: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite), escala(resolucaoSistema.x/150.f), qps(qps) {
+    limites[esquerda] = static_cast<float>(resolucaoSistema.x*0.1);
+    limites[direita] = static_cast<float>(resolucaoSistema.x*0.9);
+    velocidade = static_cast<float>(resolucaoSistema.x/qps);
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
     sprite.setTexture(textura);
     sprite.setTextureRect(posSprites[0]);
@@ -20,11 +20,11 @@ jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::pa
 void jogador::mover(const direcao dir) {
     switch(dir) {
         case direita:
-        if(sprite.getPosition().x < limites[direita]) sprite.move(sf::Vector2f({velocidade, 0.f}));
-        break;
+            if(sprite.getPosition().x < limites[direita]) sprite.move(sf::Vector2f({velocidade, 0.f}));
+            break;
         case esquerda:
-        if(sprite.getPosition().x + escala > limites[esquerda]) sprite.move(sf::Vector2f({-velocidade, 0.f}));
-        break;
+            if(sprite.getPosition().x > limites[esquerda]) sprite.move(sf::Vector2f({-velocidade, 0.f}));
+            break;
     }
 }
 

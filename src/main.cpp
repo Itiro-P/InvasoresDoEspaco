@@ -29,7 +29,7 @@ int main() {
     const sf::Vector2f tamanhoSprite(16.f, 8.f);
 
     janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
-    jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite);
+    jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
     while(janela.getEstado()) {
         janela.eventos(jogador);
         janela.desenhar(jogador);
