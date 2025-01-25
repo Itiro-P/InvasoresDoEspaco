@@ -17,6 +17,7 @@ class jogador {
     int quantidadeQuadros;
     std::vector<sf::IntRect> posSprites;
     float velocidade;
+    float escala;
     std::vector<float> limites {0.f,0.f};
 
     public:

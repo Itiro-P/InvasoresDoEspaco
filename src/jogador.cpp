@@ -5,7 +5,7 @@
 #include <string>
 
 jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite)
-: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite) {
+: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite), escala(resolucaoSistema.x/150.f) {
     limites[esquerda] = static_cast<float>(resolucaoSistema.x*0.85+1);
     limites[direita] = static_cast<float>(resolucaoSistema.x*0.15);
     velocidade = static_cast<float>(resolucaoSistema.x/10);
@@ -13,8 +13,8 @@ jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::pa
     sprite.setTexture(textura);
     sprite.setTextureRect(posSprites[0]);
     sprite.setOrigin(sf::Vector2f({tamanhoSprite.x/2.f, tamanhoSprite.y/2.f}));
-    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f, resolucaoSistema.y*0.9f }));
-    sprite.setScale(sf::Vector2f({resolucaoSistema.x/150.f , resolucaoSistema.x/150.f}));
+    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
+    sprite.setScale(sf::Vector2f({escala, escala}));
 }
 
 void jogador::mover(const direcao dir) {
@@ -23,7 +23,7 @@ void jogador::mover(const direcao dir) {
         if(sprite.getPosition().x < limites[direita]) sprite.move(sf::Vector2f({velocidade, 0.f}));
         break;
         case esquerda:
-        if(sprite.getPosition().x > limites[esquerda]) sprite.move(sf::Vector2f({-velocidade, 0.f}));
+        if(sprite.getPosition().x + escala > limites[esquerda]) sprite.move(sf::Vector2f({-velocidade, 0.f}));
         break;
     }
 }

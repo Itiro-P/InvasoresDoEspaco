@@ -43,8 +43,6 @@ void janela::eventos(std::optional<jogador> jogador) {
             case sf::Keyboard::Scancode::Right:
                 if(jogador.has_value()) jogador->mover(direita);
                 break;
-            default:
-                break;
             }
         }
     );
