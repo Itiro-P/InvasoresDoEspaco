@@ -4,13 +4,17 @@
 #include <SFML/System.hpp>
 #include <string>
 
-jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeQuadros, const std::vector<sf::Vector2f>& posQuadros, const sf::Vector2u& tamanhoSprite)
-: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posQuadros(posQuadros), sprite(textura), tamanhoSprite(tamanhoSprite) {
-    limites[esquerda] = static_cast<float>(resolucaoSistema.x*0.85);
+jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite)
+: resolucaoSistema(resolucaoSistema), quantidadeQuadros(quantidadeQuadros), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite) {
+    limites[esquerda] = static_cast<float>(resolucaoSistema.x*0.85+1);
     limites[direita] = static_cast<float>(resolucaoSistema.x*0.15);
-    velocidade = static_cast<float>(resolucaoSistema.x/100);
+    velocidade = static_cast<float>(resolucaoSistema.x/10);
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
+    sprite.setTexture(textura);
+    sprite.setTextureRect(posSprites[0]);
     sprite.setOrigin(sf::Vector2f({tamanhoSprite.x/2.f, tamanhoSprite.y/2.f}));
+    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f, resolucaoSistema.y*0.9f }));
+    sprite.setScale(sf::Vector2f({resolucaoSistema.x/150.f , resolucaoSistema.x/150.f}));
 }
 
 void jogador::mover(const direcao dir) {
