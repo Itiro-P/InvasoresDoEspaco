@@ -9,8 +9,8 @@
 gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::vector<std::vector<alien>>& mapaTipos)
     : resolucaoSistema(resolucaoSistema), escala(resolucaoSistema.x/200.f), velocidade(static_cast<float>(resolucaoSistema.x/qps)), qps(qps), vertices(sf::PrimitiveType::Triangles) {
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
-    limites[enums::direcao::esquerda] = resolucaoSistema.x*0.1f;
-    limites[enums::direcao::direita] = resolucaoSistema.x*0.9f;
+    limites[enums::direcao::esquerda] = 0.f;
+    limites[enums::direcao::direita] = resolucaoSistema.x;
     posicaoPrimeirox =  (resolucaoSistema.x - (11 * 16))/2.f;
     posicaoPrimeiroy =  resolucaoSistema.y*0.1f;
 
@@ -60,12 +60,34 @@ void gerenciadorInimigos::animar() {
         contador = 0;
         switch(direcao) {
             case enums::direcao::direita:
-                for(int i = 0; i < 55; ++i) {
-                    sf::Vertex* tri = &vertices[i];
+                if(vertices.getBounds().position.x + vertices.getBounds().size.x  <= limites[enums::direcao::direita]) {
+                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+                        vertices[i].position.x += velocidade;
+                    }
+                }
+                else {
+                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+                        vertices[i].position.y += velocidade;
+                    }
+                    direcao = enums::direcao::esquerda;
+                }
+                break;
+            case enums::direcao::esquerda:
+                if(vertices.getBounds().position.x >= limites[enums::direcao::direita]) {
+                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+                        vertices[i].position.x -= velocidade;
+                    }
+                }
+                else {
+                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+                        vertices[i].position.y += velocidade;
+                    }
+                    direcao = enums::direcao::direita;
                 }
                 break;
         }
     }
+    else ++contador;
 }
 
 void gerenciadorInimigos::desenhar(sf::RenderWindow& janela) {

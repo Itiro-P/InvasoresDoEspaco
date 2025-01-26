@@ -75,6 +75,7 @@ int main() {
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
     while (janela.getEstado()) {
+        gerenciadorInimigos.animar();
         janela.eventos(jogador);
         janela.desenhar(jogador, gerenciadorInimigos);
     }
