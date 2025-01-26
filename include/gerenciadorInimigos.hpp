@@ -11,6 +11,8 @@ class gerenciadorInimigos {
     sf::VertexArray vertices;
     sf::Texture textura;
     sf::Vector2u resolucaoSistema;
+    int qps;
+    int contador = 0;
     float escala;
     float velocidade;
     float posicaoPrimeirox;
@@ -19,5 +21,6 @@ class gerenciadorInimigos {
 
 public:
     gerenciadorInimigos(const std::filesystem::path& caminhoTextura, const sf::Vector2u& resolucaoSistema, const int qps, const std::vector<std::vector<alien>>& mapaTipos);
+    void animar();
     void desenhar(sf::RenderWindow& janela);
 };

@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::vector<std::vector<alien>>& mapaTipos)
-    : resolucaoSistema(resolucaoSistema), escala(resolucaoSistema.x/200.f), velocidade(static_cast<float>(resolucaoSistema.x/qps)), vertices(sf::PrimitiveType::Triangles) {
+    : resolucaoSistema(resolucaoSistema), escala(resolucaoSistema.x/200.f), velocidade(static_cast<float>(resolucaoSistema.x/qps)), qps(qps), vertices(sf::PrimitiveType::Triangles) {
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
     limites[enums::direcao::esquerda] = resolucaoSistema.x*0.1f;
     limites[enums::direcao::direita] = resolucaoSistema.x*0.9f;
@@ -23,7 +23,7 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
         for (int coluna = 0; coluna < 11; ++coluna) {
             sf::Vector2f posicao(
                 posicaoPrimeirox + coluna * larguraBaseInimigo * escala,
-                posicaoPrimeiroy + linha * alturaBaseInimigo * escala
+                posicaoPrimeiroy + linha * (alturaBaseInimigo * escala) + (linha != 0 ? linha * escala*2 : 0)
             );
 
             // Redimensione o VertexArray antes de acessar os vértices
@@ -51,6 +51,19 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
             tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + larguraBaseInimigo, mapaTipos[linha][coluna].posSprites[0].y);
             tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + larguraBaseInimigo, mapaTipos[linha][coluna].posSprites[0].y + alturaBaseInimigo);
             tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + alturaBaseInimigo);
+        }
+    }
+}
+
+void gerenciadorInimigos::animar() {
+    if(contador >= qps) {
+        contador = 0;
+        switch(direcao) {
+            case enums::direcao::direita:
+                for(int i = 0; i < 55; ++i) {
+                    sf::Vertex* tri = &vertices[i];
+                }
+                break;
         }
     }
 }
