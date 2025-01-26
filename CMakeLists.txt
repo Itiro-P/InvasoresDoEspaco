@@ -18,6 +18,8 @@ add_executable(main
     src/janela.cpp
     src/inimigo.cpp
     src/erroManuseio.cpp
+    src/gerenciadorInimigos.cpp
+    src/enums.cpp
 )
 
 # Diretório com os arquivos de recursos

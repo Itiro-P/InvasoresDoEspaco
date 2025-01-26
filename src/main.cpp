@@ -6,6 +6,8 @@
 #include <jogador.hpp>
 #include <janela.hpp>
 #include <inimigo.hpp>
+#include <gerenciadorInimigos.hpp>
+#include <enums.hpp>
 
 int main() {
     // caminhos de arquivos
@@ -19,6 +21,47 @@ int main() {
     const int vidasIniciais = 3; // padrao = 3
     const int pontosIniciais = 0; // padrao = 0
 
+    // aliens
+    std::vector<sf::Vector2f> posSpritesTriangulo {
+        sf::Vector2f { 1.f, 1.f },
+        sf::Vector2f { 1.f, 11.f },
+        sf::Vector2f { 55.f, 1.f }
+    };
+
+    std::vector<sf::Vector2f> posSpritesCirculo {
+        sf::Vector2f { 19.f, 1.f },
+        sf::Vector2f { 19.f, 11.f },
+        sf::Vector2f { 55.f, 1.f }
+    };
+
+    std::vector<sf::Vector2f> posSpritesquadrado {
+        sf::Vector2f { 37.f, 1.f },
+        sf::Vector2f { 37.f, 11.f },
+        sf::Vector2f { 55.f, 1.f }
+    };
+
+    std::vector<std::vector<alien>> mapaTipos(5, std::vector<alien>(11));
+
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 11; ++j) {
+            switch (i) {
+                case 0:
+                    mapaTipos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sf::Vector2f(16.f, 8.f));
+                    break;
+                case 1:
+                case 2:
+                    mapaTipos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sf::Vector2f(16.f, 8.f));
+                    break;
+                case 3:
+                case 4:
+                    mapaTipos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sf::Vector2f(16.f, 8.f));
+                    break;
+            }
+        }
+    }
+
+    gerenciadorInimigos gerenciadorInimigos(caminhoSprites, resolucao, qps, mapaTipos);
+
     // jogador
     const int quantidadeSprites = 3;
     std::vector<sf::IntRect> posSprites {
@@ -30,9 +73,11 @@ int main() {
 
     janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
-    while(janela.getEstado()) {
+
+    while (janela.getEstado()) {
         janela.eventos(jogador);
-        janela.desenhar(jogador);
+        janela.desenhar(jogador, gerenciadorInimigos);
     }
+
     return 0;
 }

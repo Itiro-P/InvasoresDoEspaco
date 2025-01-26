@@ -1,20 +1,16 @@
 #pragma once
 
-#include <erroManuseio.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 #include <filesystem>
 #include <vector>
-#include <string>
-
-enum direcao { esquerda = 0, direita = 1 };
+#include <enums.hpp>
 
 class jogador {
     sf::Vector2u resolucaoSistema;
     sf::Vector2u tamanhoSprite;
     sf::Texture textura;
     sf::Sprite sprite;
-    int quantidadeQuadros;
+    int quantidadeSprites;
     std::vector<sf::IntRect> posSprites;
     float velocidade;
     float escala;
@@ -23,7 +19,7 @@ class jogador {
 
     public:
     jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps);
-    void mover(const direcao dir);
+    void mover(const enums::direcao dir);
     sf::Vector2f getPosicao() const&;
     sf::Sprite getSprite() const&;
 };
