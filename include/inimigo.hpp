@@ -4,14 +4,13 @@
 #include <vector>
 #include <enums.hpp>
 
-class inimigo {
-    alien tipo;
-    enums::condicao estado = enums::condicao::vivo;
-    sf::Vector2f posicao;
-
+class alien {
     public:
-    inimigo(const alien& alien, const sf::Vector2f& posicao);
-    enums::condicao getEstado() const&;
-    enums::tipo getTipo() const&;
-    void setEstado(enums::condicao estado);
+    enums::tipo tipo;
+    int quantidadeSprites = 3;
+    std::array<sf::Vector2f, 3> posSprites;
+    sf::Vector2f tamanhoSprite;
+    
+    alien(const enums::tipo tipo, const std::array<sf::Vector2f, 3>& posSprites, const sf::Vector2f& tamanhoSprite);
+    alien() = default;
 };

@@ -5,16 +5,4 @@
 #include <vector>
 #include <filesystem>
 
-inimigo::inimigo(const alien& alien, const sf::Vector2f& posicao) : tipo(alien), posicao(posicao) {}
-
-enums::condicao inimigo::getEstado() const& {
-    return estado;
-}
-
-enums::tipo inimigo::getTipo() const& {
-    return tipo.tipo;
-}
-
-void inimigo::setEstado(enums::condicao novoEstado) {
-    estado = novoEstado;
-}
+alien::alien(const enums::tipo tipo, const std::array<sf::Vector2f, 3> &posSprites, const sf::Vector2f &tamanhoSprite) : tipo(tipo), posSprites(posSprites), tamanhoSprite(tamanhoSprite) {}

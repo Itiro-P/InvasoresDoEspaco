@@ -19,7 +19,7 @@ add_executable(main
     src/inimigo.cpp
     src/erroManuseio.cpp
     src/gerenciadorInimigos.cpp
-    src/enums.cpp
+    #src/enums.cpp
 )
 
 # Diretório com os arquivos de recursos

@@ -24,6 +24,10 @@ class gerenciadorInimigos {
 
 public:
     gerenciadorInimigos(const std::filesystem::path& caminhoTextura, const sf::Vector2u& resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaTipos);
-    void animar();
+    void atualizarVertices();
     void desenhar(sf::RenderWindow& janela);
+    alien getAlien(const int linha, const int coluna) const&;
+
+private:
+    void atualizarSprites(sf::Vertex* vertice, const int linha, const int coluna);
 };

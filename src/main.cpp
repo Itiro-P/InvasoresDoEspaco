@@ -22,19 +22,19 @@ int main() {
     const int pontosIniciais = 0; // padrao = 0
 
     // aliens
-    std::array<sf::Vector2f, 3> posSpritesTriangulo {
+    const std::array<sf::Vector2f, 3> posSpritesTriangulo {
         sf::Vector2f { 1.f, 1.f },
         sf::Vector2f { 1.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
     };
 
-    std::array<sf::Vector2f, 3> posSpritesCirculo {
+    const std::array<sf::Vector2f, 3> posSpritesCirculo {
         sf::Vector2f { 19.f, 1.f },
         sf::Vector2f { 19.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
     };
 
-    std::array<sf::Vector2f, 3> posSpritesquadrado {
+    const std::array<sf::Vector2f, 3> posSpritesquadrado {
         sf::Vector2f { 37.f, 1.f },
         sf::Vector2f { 37.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
@@ -75,7 +75,7 @@ int main() {
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
     while (janela.getEstado()) {
-        gerenciadorInimigos.animar();
+        gerenciadorInimigos.atualizarVertices();
         janela.eventos(jogador);
         janela.desenhar(jogador, gerenciadorInimigos);
     }
