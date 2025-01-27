@@ -8,8 +8,8 @@
 
 jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps)
 : resolucaoSistema(resolucaoSistema), quantidadeSprites(quantidadeSprites), posSprites(posSprites), sprite(textura), tamanhoSprite(tamanhoSprite), escala(resolucaoSistema.x/200.f), qps(qps) {
-    limites[enums::direcao::esquerda] = resolucaoSistema.x*0.1f;
-    limites[enums::direcao::direita] = resolucaoSistema.x*0.9f;
+    limites[enums::direcao::esquerda] = resolucaoSistema.x*0.05f;
+    limites[enums::direcao::direita] = resolucaoSistema.x*0.95f;
     velocidade = static_cast<float>(resolucaoSistema.x/qps);
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
     sprite.setTexture(textura);

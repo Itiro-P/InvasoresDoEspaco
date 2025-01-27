@@ -6,90 +6,92 @@
 #include <enums.hpp>
 #include <SFML/Graphics.hpp>
 
-gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::vector<std::vector<alien>>& mapaTipos)
-    : resolucaoSistema(resolucaoSistema), escala(resolucaoSistema.x/200.f), velocidade(static_cast<float>(resolucaoSistema.x/qps)), qps(qps), vertices(sf::PrimitiveType::Triangles) {
+gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaTipos)
+    : resolucaoSistema(resolucaoSistema), escala(resolucaoSistema.x/200.f), velocidade(static_cast<float>(resolucaoSistema.x/qps)), qps(qps), mapaTipos(mapaTipos) {
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
-    limites[enums::direcao::esquerda] = 0.f;
-    limites[enums::direcao::direita] = resolucaoSistema.x;
-    posicaoPrimeirox =  (resolucaoSistema.x - (11 * 16))/2.f;
-    posicaoPrimeiroy =  resolucaoSistema.y*0.1f;
-
-    const float larguraBaseInimigo = 16.f; // Largura base de um inimigo
-    const float alturaBaseInimigo = 8.f;   // Altura base de um inimigo
-    posicaoPrimeirox = (resolucaoSistema.x - (11 * larguraBaseInimigo * escala)) / 2.f;
-    posicaoPrimeiroy = resolucaoSistema.y * 0.1f;
-
-    for (int linha = 0; linha < 5; ++linha) {
-        for (int coluna = 0; coluna < 11; ++coluna) {
+    limites[enums::direcao::esquerda] = resolucaoSistema.x*0.05f;
+    limites[enums::direcao::direita] = resolucaoSistema.x*0.95f;
+    posTopoEsquerdoX = (resolucaoSistema.x - (11 * 16))/2.f;
+    posTopoEsquerdoY = resolucaoSistema.y/10.f;
+    for(auto& linha: vertices) {
+        linha.setPrimitiveType(sf::PrimitiveType::Triangles);
+        linha.resize(66);
+    }
+    for(int linha = 0; linha < 5; ++linha) {
+        for(int coluna = 0; coluna < 11; ++coluna) {
+            sf::Vertex* tri1 = &vertices[linha][coluna];
             sf::Vector2f posicao(
-                posicaoPrimeirox + coluna * larguraBaseInimigo * escala,
-                posicaoPrimeiroy + linha * (alturaBaseInimigo * escala) + (linha != 0 ? linha * escala*2 : 0)
+                posTopoEsquerdoX + tamanhoSpriteX*coluna,
+                posTopoEsquerdoY + tamanhoSpriteY*linha + (linha != 0 ? linha * escala*2.f: 0.f)
             );
-
-            // Redimensione o VertexArray antes de acessar os vértices
-            std::size_t index = vertices.getVertexCount();
-            vertices.resize(index + 6); // 6 vértices = 2 triângulos
-
-            // Acesse os vértices após o redimensionamento
-            sf::Vertex* tri1 = &vertices[index];
-
-            // Triângulo 1
             tri1[0].position = sf::Vector2f(posicao.x, posicao.y);
-            tri1[1].position = sf::Vector2f(posicao.x + larguraBaseInimigo * escala, posicao.y);
-            tri1[2].position = sf::Vector2f(posicao.x, posicao.y + alturaBaseInimigo * escala);
+            tri1[1].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y);
+            tri1[2].position = sf::Vector2f(posicao.x, posicao.y + tamanhoSpriteY * escala);
 
-            // Triângulo 2
-            tri1[3].position = sf::Vector2f(posicao.x + larguraBaseInimigo * escala, posicao.y);
-            tri1[4].position = sf::Vector2f(posicao.x + larguraBaseInimigo * escala, posicao.y + alturaBaseInimigo * escala);
-            tri1[5].position = sf::Vector2f(posicao.x, posicao.y + alturaBaseInimigo * escala);
+            tri1[3].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y);
+            tri1[4].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y + tamanhoSpriteY * escala);
+            tri1[5].position = sf::Vector2f(posicao.x, posicao.y + tamanhoSpriteY * escala);
 
-            // Coordenadas de textura
             tri1[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + larguraBaseInimigo, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + alturaBaseInimigo);
+            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y);
+            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
 
-            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + larguraBaseInimigo, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + larguraBaseInimigo, mapaTipos[linha][coluna].posSprites[0].y + alturaBaseInimigo);
-            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + alturaBaseInimigo);
+            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y);
+            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
+            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
         }
     }
 }
-
 void gerenciadorInimigos::animar() {
     if(contador >= qps) {
         contador = 0;
+        spriteAtual = (spriteAtual == 0 ? 1 : 0);
         switch(direcao) {
-            case enums::direcao::direita:
-                if(vertices.getBounds().position.x + vertices.getBounds().size.x  <= limites[enums::direcao::direita]) {
-                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
-                        vertices[i].position.x += velocidade;
+        case enums::direcao::direita:
+            if(vertices[0].getBounds().position.x + vertices[0].getBounds().size.x <= limites[enums::direcao::direita]) {
+                for(int linha = 0; linha < 5; ++linha) {
+                    for(int coluna = 0; coluna < 11; ++coluna) {
+                        vertices[linha][coluna].position.x += velocidade;
+                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
-                else {
-                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
-                        vertices[i].position.y += velocidade;
-                    }
-                    direcao = enums::direcao::esquerda;
-                }
-                break;
-            case enums::direcao::esquerda:
-                if(vertices.getBounds().position.x >= limites[enums::direcao::direita]) {
-                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
-                        vertices[i].position.x -= velocidade;
+            }
+            else {
+               for(int linha = 0; linha < 5; ++linha) {
+                    for(int coluna = 0; coluna < 11; ++coluna) {
+                        vertices[linha][coluna].position.y += velocidade;
+                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
-                else {
-                    for(std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
-                        vertices[i].position.y += velocidade;
+                direcao = enums::direcao::esquerda;
+            }
+            break;
+        case enums::direcao::esquerda:
+            if(vertices[0].getBounds().position.x + vertices[0].getBounds().size.x >= limites[enums::direcao::direita]) {
+                for(int linha = 0; linha < 5; ++linha) {
+                    for(int coluna = 0; coluna < 11; ++coluna) {
+                        vertices[linha][coluna].position.x -= velocidade;
+                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
-                    direcao = enums::direcao::direita;
                 }
-                break;
+            }
+            else {
+               for(int linha = 0; linha < 5; ++linha) {
+                    for(int coluna = 0; coluna < 11; ++coluna) {
+                        vertices[linha][coluna].position.y += velocidade;
+                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
+                    }
+                }
+                direcao = enums::direcao::direita;
+            }
+            break;
         }
     }
     else ++contador;
 }
 
 void gerenciadorInimigos::desenhar(sf::RenderWindow& janela) {
-    janela.draw(vertices, &textura);
+    for(auto& linha : vertices) {
+        janela.draw(linha, &textura);
+    }
 }

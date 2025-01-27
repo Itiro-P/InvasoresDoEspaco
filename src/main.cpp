@@ -22,25 +22,25 @@ int main() {
     const int pontosIniciais = 0; // padrao = 0
 
     // aliens
-    std::vector<sf::Vector2f> posSpritesTriangulo {
+    std::array<sf::Vector2f, 3> posSpritesTriangulo {
         sf::Vector2f { 1.f, 1.f },
         sf::Vector2f { 1.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
     };
 
-    std::vector<sf::Vector2f> posSpritesCirculo {
+    std::array<sf::Vector2f, 3> posSpritesCirculo {
         sf::Vector2f { 19.f, 1.f },
         sf::Vector2f { 19.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
     };
 
-    std::vector<sf::Vector2f> posSpritesquadrado {
+    std::array<sf::Vector2f, 3> posSpritesquadrado {
         sf::Vector2f { 37.f, 1.f },
         sf::Vector2f { 37.f, 11.f },
         sf::Vector2f { 55.f, 1.f }
     };
 
-    std::vector<std::vector<alien>> mapaTipos(5, std::vector<alien>(11));
+    std::array<std::array<alien, 11>, 5> mapaTipos;
 
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 11; ++j) {

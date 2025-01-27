@@ -2,4 +2,4 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-alien::alien(const enums::tipo tipo, const std::vector<sf::Vector2f> &posSprites, const sf::Vector2f &tamanhoSprite) : tipo(tipo), posSprites(posSprites), tamanhoSprite(tamanhoSprite) {}
+alien::alien(const enums::tipo tipo, const std::array<sf::Vector2f, 3> &posSprites, const sf::Vector2f &tamanhoSprite) : tipo(tipo), posSprites(posSprites), tamanhoSprite(tamanhoSprite) {}
