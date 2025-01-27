@@ -30,6 +30,9 @@ void jogador::mover(const enums::direcao dir) {
     }
 }
 
+void jogador::atirar() {
+}
+
 sf::Vector2f jogador::getPosicao() const& {
     return sprite.getPosition();
 }

@@ -45,6 +45,9 @@ void janela::eventos(std::optional<std::reference_wrapper<jogador>> jogador) {
             case sf::Keyboard::Scancode::Right:
                 if(jogador.has_value()) jogador->get().mover(enums::direcao::direita);
                 break;
+            case sf::Keyboard::Scancode::Space:
+                if(jogador.has_value()) jogador->get().atirar();
+                break;
             }
         }
     );

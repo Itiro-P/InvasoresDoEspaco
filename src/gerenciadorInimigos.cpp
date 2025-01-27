@@ -36,13 +36,13 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
             tri1[4].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y + tamanhoSpriteY * escala);
             tri1[5].position = sf::Vector2f(posicao.x, posicao.y + tamanhoSpriteY * escala);
 
-            tri1[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
+            tri1[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
 
-            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
-            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
+            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
+            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
         }
     }
 }
@@ -134,10 +134,10 @@ alien gerenciadorInimigos::getAlien(const int linha, const int coluna) const & {
 }
 
 void gerenciadorInimigos::atualizarSprites(sf::Vertex* vertice, const int linha, const int coluna) {
-    vertice[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-    vertice[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-    vertice[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
-    vertice[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
-    vertice[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
-    vertice[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
+    vertice[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+    vertice[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+    vertice[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
+    vertice[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y);
+    vertice[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
+    vertice[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].getPosSprites()[spriteAtual].x, mapaTipos[linha][coluna].getPosSprites()[spriteAtual].y + tamanhoSpriteY);
 }
