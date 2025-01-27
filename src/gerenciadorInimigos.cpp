@@ -22,7 +22,7 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
             sf::Vertex* tri1 = &vertices[linha][coluna];
             sf::Vector2f posicao(
                 posTopoEsquerdoX + tamanhoSpriteX*coluna,
-                posTopoEsquerdoY + tamanhoSpriteY*linha + (linha != 0 ? linha * escala*2.f: 0.f)
+                posTopoEsquerdoY + tamanhoSpriteY*linha + (linha != 0 ? linha*escala*2.f: 0.f)
             );
             tri1[0].position = sf::Vector2f(posicao.x, posicao.y);
             tri1[1].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y);
@@ -32,13 +32,13 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
             tri1[4].position = sf::Vector2f(posicao.x + tamanhoSpriteX * escala, posicao.y + tamanhoSpriteY * escala);
             tri1[5].position = sf::Vector2f(posicao.x, posicao.y + tamanhoSpriteY * escala);
 
-            tri1[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
+            tri1[0].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
+            tri1[1].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
+            tri1[2].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
 
-            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y);
-            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
-            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[0].x, mapaTipos[linha][coluna].posSprites[0].y + tamanhoSpriteY);
+            tri1[3].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y);
+            tri1[4].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x + tamanhoSpriteX, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
+            tri1[5].texCoords = sf::Vector2f(mapaTipos[linha][coluna].posSprites[spriteAtual].x, mapaTipos[linha][coluna].posSprites[spriteAtual].y + tamanhoSpriteY);
         }
     }
 }
@@ -52,7 +52,7 @@ void gerenciadorInimigos::animar() {
                 for(int linha = 0; linha < 5; ++linha) {
                     for(int coluna = 0; coluna < 11; ++coluna) {
                         vertices[linha][coluna].position.x += velocidade;
-                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
+                        vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
             }
@@ -60,7 +60,7 @@ void gerenciadorInimigos::animar() {
                for(int linha = 0; linha < 5; ++linha) {
                     for(int coluna = 0; coluna < 11; ++coluna) {
                         vertices[linha][coluna].position.y += velocidade;
-                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
+                        vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
                 direcao = enums::direcao::esquerda;
@@ -71,7 +71,7 @@ void gerenciadorInimigos::animar() {
                 for(int linha = 0; linha < 5; ++linha) {
                     for(int coluna = 0; coluna < 11; ++coluna) {
                         vertices[linha][coluna].position.x -= velocidade;
-                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
+                        vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
             }
@@ -79,7 +79,7 @@ void gerenciadorInimigos::animar() {
                for(int linha = 0; linha < 5; ++linha) {
                     for(int coluna = 0; coluna < 11; ++coluna) {
                         vertices[linha][coluna].position.y += velocidade;
-                        //vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
+                        vertices[linha][coluna].texCoords = mapaTipos[linha][coluna].posSprites[spriteAtual];
                     }
                 }
                 direcao = enums::direcao::direita;
