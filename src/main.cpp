@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <vector>
+#include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
@@ -7,6 +8,7 @@
 #include <janela.hpp>
 #include <inimigo.hpp>
 #include <gerenciadorInimigos.hpp>
+#include <erroManuseio.hpp>
 #include <enums.hpp>
 
 int main() {
@@ -22,45 +24,48 @@ int main() {
     const int pontosIniciais = 0; // padrao = 0
 
     // aliens
-    const std::array<sf::Vector2f, 3> posSpritesTriangulo {
-        sf::Vector2f { 1.f, 1.f },
-        sf::Vector2f { 1.f, 11.f },
-        sf::Vector2f { 55.f, 1.f }
+    const std::array<sf::Vector2i, 3> posSpritesTriangulo {
+        sf::Vector2i { 1, 1 },
+        sf::Vector2i { 1, 11 },
+        sf::Vector2i { 55, 1 }
     };
 
-    const std::array<sf::Vector2f, 3> posSpritesCirculo {
-        sf::Vector2f { 19.f, 1.f },
-        sf::Vector2f { 19.f, 11.f },
-        sf::Vector2f { 55.f, 1.f }
+    const std::array<sf::Vector2i, 3> posSpritesCirculo {
+        sf::Vector2i { 19, 1 },
+        sf::Vector2i { 19, 11 },
+        sf::Vector2i { 55, 1 }
     };
 
-    const std::array<sf::Vector2f, 3> posSpritesquadrado {
-        sf::Vector2f { 37.f, 1.f },
-        sf::Vector2f { 37.f, 11.f },
-        sf::Vector2f { 55.f, 1.f }
+    const std::array<sf::Vector2i, 3> posSpritesquadrado {
+        sf::Vector2i { 37, 1 },
+        sf::Vector2i { 37, 11 },
+        sf::Vector2i { 55, 1 }
     };
 
-    std::array<std::array<alien, 11>, 5> mapaTipos;
+    sf::Texture sprites;
+    if(!sprites.loadFromFile(caminhoSprites)) erroArquivo(caminhoSprites.string());
+
+    std::array<std::array<alien, 11>, 5> mapaInimigos;
 
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 11; ++j) {
             switch (i) {
                 case 0:
-                    mapaTipos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sf::Vector2f(16.f, 8.f));
+                    mapaInimigos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sprites, sf::Vector2i(16, 8));
                     break;
                 case 1:
                 case 2:
-                    mapaTipos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sf::Vector2f(16.f, 8.f));
+                    mapaInimigos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sprites, sf::Vector2i(16, 8));
                     break;
                 case 3:
                 case 4:
-                    mapaTipos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sf::Vector2f(16.f, 8.f));
+                    mapaInimigos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sprites, sf::Vector2i(16, 8));
                     break;
             }
         }
     }
 
-    gerenciadorInimigos gerenciadorInimigos(caminhoSprites, resolucao, qps, mapaTipos);
+    gerenciadorInimigos gerenciadorInimigos(caminhoSprites, resolucao, qps, mapaInimigos);
 
     // jogador
     const int quantidadeSprites = 3;
@@ -75,8 +80,10 @@ int main() {
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
     while (janela.getEstado()) {
-        gerenciadorInimigos.atualizarVertices();
         janela.eventos(jogador);
+        jogador.atualizarBalas();
+        jogador.calcularColisao(gerenciadorInimigos, janela);
+        gerenciadorInimigos.atualizarPosicao();
         janela.desenhar(jogador, gerenciadorInimigos);
     }
 

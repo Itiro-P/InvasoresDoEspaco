@@ -3,18 +3,35 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <enums.hpp>
+#include <optional>
+
+class bala;
 
 class alien {
-    enums::tipo tipo;
+    enums::tipo tipo = enums::tipo::circulo;
     enums::condicao estado = enums::condicao::vivo;
     int quantidadeSprites = 3;
-    std::array<sf::Vector2f, 3> posSprites;
-    sf::Vector2f tamanhoSprite;
+    std::optional<sf::Sprite> sprite;
+    sf::Vector2i tamanhoSprites{16, 8};
+    std::array<sf::Vector2i, 3> posSprites {
+        sf::Vector2i{0, 0},
+        sf::Vector2i{0, 0},
+        sf::Vector2i{0, 0}
+    };
     
     public:
-    alien(const enums::tipo tipo, const std::array<sf::Vector2f, 3>& posSprites, const sf::Vector2f& tamanhoSprite);
+    alien() = default;
+    alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites);
+    sf::FloatRect getRectAlien() const&;
     enums::tipo getTipo() const&;
     enums::condicao getEstado() const&;
-    std::array<sf::Vector2f, 3> getPosSprites() const&;
-    alien() = default;
+    sf::Vector2f getPosition() const&;
+    std::array<sf::Vector2i, 3> getPosSprites() const&;
+    sf::Sprite getSprite() const&;
+    bool checarColisao(const bala& bala);
+    void setPosition(const sf::Vector2f& posicao);
+    void setScale(const sf::Vector2f& scale);
+    void setRect(const int idx);
+    void inimigoMover(const sf::Vector2f& velocidade);
+    void setEstado(const enums::condicao condicao);
 };

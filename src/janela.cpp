@@ -18,17 +18,35 @@ janela::janela(const sf::Vector2u& resolucao, const std::filesystem::path& camin
 
     textoVidas.setString("Vidas: " + std::to_string(vidas));
     textoVidas.setFillColor(sf::Color::White);
-    textoVidas.setCharacterSize(static_cast<unsigned int>(resolucao.x / 50));
+    textoVidas.setCharacterSize(static_cast<unsigned int>(resolucao.x / 40));
     textoVidas.setPosition(sf::Vector2f({resolucao.x*0.85f , 10.f}));
 
     textoPontos.setString("Pontos: " + std::to_string(pontos));
     textoPontos.setFillColor(sf::Color::White);
-    textoPontos.setCharacterSize(static_cast<unsigned int>(resolucao.x / 50));
+    textoPontos.setCharacterSize(static_cast<unsigned int>(resolucao.x / 40));
     textoPontos.setPosition(sf::Vector2f({resolucao.x*0.01f , 10.f}));
 }
 
 bool janela::getEstado() const& {
     return instanciaJanela.isOpen();
+}
+
+void janela::setPontuacao(const enums::tipo tipo) {
+    switch (tipo) {
+        case enums::tipo::circulo:
+        pontos += 10;
+        break;
+        case enums::tipo::quadrado:
+        pontos += 20;
+        break;
+        case enums::tipo::triangulo:
+        pontos += 40;
+        break;
+    }
+    textoPontos.setString("Pontos: " + std::to_string(pontos));
+    if(pontos % 1500 == 0 && vidas < 3 && vidas != 0) {
+        textoPontos.setString("Vidas: " + std::to_string(++vidas));
+    }
 }
 
 void janela::eventos(std::optional<std::reference_wrapper<jogador>> jogador) {
@@ -57,7 +75,12 @@ void janela::desenhar(const std::optional<std::reference_wrapper<jogador>>& joga
     instanciaJanela.clear();
     instanciaJanela.draw(textoVidas);
     instanciaJanela.draw(textoPontos);
-    if(jogador.has_value()) instanciaJanela.draw(jogador->get().getSprite());
+    if(jogador.has_value()) {
+        instanciaJanela.draw(jogador->get().getSprite());
+        for(const auto& bala: jogador->get().getBalas()) {
+            instanciaJanela.draw(bala.getForma());
+        }
+    }
     if(gerenciadorInimigos.has_value()) gerenciadorInimigos->get().desenhar(instanciaJanela);
     instanciaJanela.display();
 }

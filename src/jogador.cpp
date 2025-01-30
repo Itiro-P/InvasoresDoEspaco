@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <janela.hpp>
 #include <enums.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <string>
 
 jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps)
@@ -18,6 +19,11 @@ jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::pa
     sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
     sprite.setScale(sf::Vector2f({escala, escala}));
 }
+void jogador::atualizarBalas() {
+    for(auto& bala: balas) {
+        bala.mover();
+    }
+}
 
 void jogador::mover(const enums::direcao dir) {
     switch(dir) {
@@ -31,6 +37,46 @@ void jogador::mover(const enums::direcao dir) {
 }
 
 void jogador::atirar() {
+    balas.emplace_back(sprite.getPosition(), escala, qps);
+}
+
+void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela) {
+    auto it = balas.begin();
+    while (it != balas.end()) {
+        bool colisaoDetectada = false;
+
+        for (int linha = 4; linha >= 0; --linha) {
+            for (int coluna = 0; coluna < 11; ++coluna) {
+                auto& inimigo = gerenciadorInimigos.getMapa()[linha][coluna];
+
+                // Verifica se o inimigo está vivo
+                if (inimigo.getEstado() == enums::condicao::vivo) {
+
+                    // Verifica colisão
+                    if (inimigo.checarColisao(*it)) {
+                        inimigo.setEstado(enums::condicao::morrendo);
+                        inimigo.setRect(2);
+                        janela.setPontuacao(inimigo.getTipo());
+                        ++mortes;
+                        colisaoDetectada = true;
+                        break; // Sai do loop de colisão
+                    }
+                }
+            }
+            if (colisaoDetectada) break; // Sai do loop de linhas
+        }
+
+        // Remove a bala se houve colisão
+        if (colisaoDetectada) {
+            it = balas.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+std::vector<bala> jogador::getBalas() const& {
+    return balas;
 }
 
 sf::Vector2f jogador::getPosicao() const& {
@@ -39,4 +85,26 @@ sf::Vector2f jogador::getPosicao() const& {
 
 sf::Sprite jogador::getSprite() const& {
     return sprite;
+}
+
+bala::bala(const sf::Vector2f &posicao, const float escala, const int qps) : posicao(posicao), escala(escala), qps(qps) {
+    velocidade = -qps/15.f;
+    forma.setPosition(sf::Vector2f(posicao.x, posicao.y*0.9f));
+    forma.setSize(sf::Vector2f(1.f * escala, 4.f * escala));
+}
+
+sf::FloatRect bala::getRectBala() const& {
+    return sf::FloatRect(forma.getPosition(), forma.getSize());
+}
+
+sf::RectangleShape bala::getForma() const& {
+    return forma;
+}
+
+sf::Vector2f bala::getPosition() const& {
+    return forma.getPosition();
+}
+
+void bala::mover() {
+    forma.move(sf::Vector2f(0.f, velocidade));
 }

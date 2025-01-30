@@ -6,7 +6,7 @@
 namespace enums {
     enum tipo { triangulo, circulo, quadrado };
 
-    enum condicao { morto, vivo };
+    enum condicao { morto, vivo , morrendo };
 
     enum direcao { esquerda, direita };
 };

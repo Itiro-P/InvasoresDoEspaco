@@ -7,15 +7,15 @@
 
 class gerenciadorInimigos {
     std::array<float, 2> limites {0.f, 0.f};
-    std::array<sf::VertexArray, 5> vertices;
-    std::array<std::array<alien, 11>, 5> mapaTipos;
+    std::array<std::array<alien, 11>, 5> mapa;
     sf::Texture textura;
     sf::Vector2u resolucaoSistema;
-    const float tamanhoSpriteX = 16.f;
-    const float tamanhoSpriteY = 8.f;
+    sf::Vector2f tamanhoSprite{16.f, 8.f};
+    int inimigosVivos = 55;
     int qps;
-    int contador = 0;
+    int contadorQuadros = 0;
     int spriteAtual = 0;
+    const int spriteMorte = 2;
     float escala;
     float velocidade;
     float posTopoEsquerdoX;
@@ -23,11 +23,8 @@ class gerenciadorInimigos {
     enums::direcao direcao = enums::direcao::esquerda;
 
 public:
-    gerenciadorInimigos(const std::filesystem::path& caminhoTextura, const sf::Vector2u& resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaTipos);
-    void atualizarVertices();
+    gerenciadorInimigos(const std::filesystem::path& caminhoTextura, const sf::Vector2u& resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaInimigos);
+    void atualizarPosicao();
+    std::array<std::array<alien, 11>, 5>& getMapa();
     void desenhar(sf::RenderWindow& janela);
-    alien getAlien(const int linha, const int coluna) const&;
-
-private:
-    void atualizarSprites(sf::Vertex* vertice, const int linha, const int coluna);
 };
