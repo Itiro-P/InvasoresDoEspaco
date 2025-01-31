@@ -61,12 +61,32 @@ void gerenciadorInimigos::atualizarPosicao() {
                 else if(inimigo.getEstado() == enums::condicao::morrendo) {
                     inimigo.setRect(spriteMorte);
                     inimigo.setEstado(enums::condicao::morto);
+                    --inimigosVivos;
                 }
             }
         }
     } else {
         ++contadorQuadros;
     }
+}
+
+void gerenciadorInimigos::restaurarPosicoes() {
+    inimigosVivos = 55;
+    spriteAtual = 0;
+    for(int linha = 0; linha < 5; ++linha) {
+        for(int coluna = 0; coluna < 11; ++coluna) {
+            sf::Vector2f posicao{resolucaoSistema.x*0.05f + tamanhoSprite.x*coluna*escala, resolucaoSistema.x/10.f + tamanhoSprite.y*linha*escala + escala*linha};
+            mapa[linha][coluna].setPosition(posicao);
+            mapa[linha][coluna].setEstado(enums::condicao::vivo);
+            mapa[linha][coluna].setRect(spriteAtual);
+        }
+    }
+    posTopoEsquerdoX = mapa.front().front().getPosition().x;
+    posTopoEsquerdoY = mapa.front().front().getPosition().y;
+}
+
+int gerenciadorInimigos::getInimigosVivos() const& {
+    return inimigosVivos;
 }
 
 std::array<std::array<alien, 11>, 5>& gerenciadorInimigos::getMapa() {

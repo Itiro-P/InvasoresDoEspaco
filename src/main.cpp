@@ -80,6 +80,10 @@ int main() {
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
     while (janela.getEstado()) {
+        if(gerenciadorInimigos.getInimigosVivos() == 0) {
+            gerenciadorInimigos.restaurarPosicoes();
+            jogador.restaurarJogador();
+        }
         janela.eventos(jogador);
         jogador.atualizarBalas();
         jogador.calcularColisao(gerenciadorInimigos, janela);

@@ -76,6 +76,11 @@ void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& 
     }
 }
 
+void jogador::restaurarJogador() {
+    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
+    balas.clear();
+}
+
 std::vector<bala> jogador::getBalas() const& {
     return balas;
 }

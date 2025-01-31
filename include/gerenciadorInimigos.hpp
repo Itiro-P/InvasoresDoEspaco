@@ -25,6 +25,8 @@ class gerenciadorInimigos {
 public:
     gerenciadorInimigos(const std::filesystem::path& caminhoTextura, const sf::Vector2u& resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaInimigos);
     void atualizarPosicao();
+    void restaurarPosicoes();
+    int getInimigosVivos() const&;
     std::array<std::array<alien, 11>, 5>& getMapa();
     void desenhar(sf::RenderWindow& janela);
 };

@@ -40,10 +40,7 @@ void alien::inimigoMover(const sf::Vector2f &velocidade) {
 }
 
 void alien::setEstado(const enums::condicao condicao) {
-    // Verifica se o estado atual permite a alteração
-    if (estado != enums::condicao::morto) {
-        estado = condicao;
-    }
+    estado = condicao;
 }
 
 sf::Vector2f alien::getPosition() const& {
