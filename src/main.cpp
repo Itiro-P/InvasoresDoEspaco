@@ -82,7 +82,7 @@ int main() {
     while (janela.getEstado()) {
         if(gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
-            jogador.restaurarJogador();
+            jogador.restaurarJogador(janela);
         }
         janela.eventos(jogador);
         jogador.atualizarBalas();

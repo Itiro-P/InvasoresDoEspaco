@@ -35,6 +35,7 @@ class jogador {
     float escala;
     int qps;
     int mortes = 0;
+    bool perdeu = 0;
     std::vector<float> limites {0.f,0.f};
 
     std::vector<bala> balas;
@@ -45,7 +46,7 @@ class jogador {
     void mover(const enums::direcao dir);
     void atirar();
     void calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela);
-    void restaurarJogador();
+    void restaurarJogador(const std::optional<std::reference_wrapper<janela>>& janela = std::nullopt);
     std::vector<bala> getBalas() const&;
     sf::Vector2f getPosicao() const&;
     sf::Sprite getSprite() const&;

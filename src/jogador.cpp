@@ -76,9 +76,14 @@ void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& 
     }
 }
 
-void jogador::restaurarJogador() {
+void jogador::restaurarJogador(const std::optional<std::reference_wrapper<janela>>& janela) {
     sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
     balas.clear();
+    if(perdeu) {
+        perdeu = 0;
+        if(janela.has_value()) janela->get().restaurar();
+        mortes = 0;
+    }
 }
 
 std::vector<bala> jogador::getBalas() const& {

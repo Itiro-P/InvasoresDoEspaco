@@ -31,6 +31,11 @@ bool janela::getEstado() const& {
     return instanciaJanela.isOpen();
 }
 
+void janela::restaurar() {
+    vidas = 3;
+    pontos = 0;
+}
+
 void janela::setPontuacao(const enums::tipo tipo) {
     switch (tipo) {
         case enums::tipo::circulo:
