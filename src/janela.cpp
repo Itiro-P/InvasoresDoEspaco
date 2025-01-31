@@ -53,19 +53,11 @@ void janela::eventos(std::optional<std::reference_wrapper<jogador>> jogador) {
     instanciaJanela.handleEvents(
         [this](const sf::Event::Closed) { instanciaJanela.close(); },
         [this, &jogador](const sf::Event::KeyPressed tecla) {
-            switch (tecla.scancode) {
-            case sf::Keyboard::Scancode::Escape:
-                instanciaJanela.close();
-                break;
-            case sf::Keyboard::Scancode::Left:
-                if(jogador.has_value()) jogador->get().mover(enums::direcao::esquerda);
-                break;
-            case sf::Keyboard::Scancode::Right:
-                if(jogador.has_value()) jogador->get().mover(enums::direcao::direita);
-                break;
-            case sf::Keyboard::Scancode::Space:
-                if(jogador.has_value()) jogador->get().atirar();
-                break;
+            if(jogador.has_value()) {
+                if(tecla.scancode == sf::Keyboard::Scancode::Escape) instanciaJanela.close();
+                if(tecla.scancode == sf::Keyboard::Scancode::Left) jogador->get().mover(enums::direcao::esquerda);
+                if(tecla.scancode == sf::Keyboard::Scancode::Right) jogador->get().mover(enums::direcao::direita);
+                if(tecla.scancode == sf::Keyboard::Scancode::Space) jogador->get().atirar();
             }
         }
     );

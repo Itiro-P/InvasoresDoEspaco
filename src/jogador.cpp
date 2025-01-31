@@ -19,6 +19,7 @@ jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::pa
     sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
     sprite.setScale(sf::Vector2f({escala, escala}));
 }
+
 void jogador::atualizarBalas() {
     for(auto& bala: balas) {
         bala.mover();

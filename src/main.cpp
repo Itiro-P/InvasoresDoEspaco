@@ -69,7 +69,7 @@ int main() {
 
     // jogador
     const int quantidadeSprites = 3;
-    std::vector<sf::IntRect> posSprites {
+    const std::vector<sf::IntRect> posSprites {
         sf::IntRect(sf::Vector2i(1, 49), sf::Vector2i(16, 8)),
         sf::IntRect(sf::Vector2i(19, 49), sf::Vector2i(16, 8)),
         sf::IntRect(sf::Vector2i(37, 49), sf::Vector2i(16, 8))
