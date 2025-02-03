@@ -18,15 +18,17 @@ class alien {
         sf::Vector2i{0, 0},
         sf::Vector2i{0, 0}
     };
+    std::array<sf::IntRect, 4> posSpritesBalas;
     
     public:
     alien() = default;
-    alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites);
+    alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites, const std::array<sf::IntRect, 4>& posSpritesBalas);
     sf::FloatRect getRectAlien() const&;
     enums::tipo getTipo() const&;
     enums::condicao getEstado() const&;
     sf::Vector2f getPosition() const&;
     std::array<sf::Vector2i, 3> getPosSprites() const&;
+    std::array<sf::IntRect, 4> getPosSpritesBalas() const&;
     sf::Sprite getSprite() const&;
     bool checarColisao(const bala& bala);
     void setPosition(const sf::Vector2f& posicao);

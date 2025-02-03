@@ -6,8 +6,8 @@
 #include <vector>
 #include <filesystem>
 
-alien::alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites) : 
-tipo(tipo), posSprites(posSprites), sprite(textura), tamanhoSprites(tamanhoSprites) {
+alien::alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites, const std::array<sf::IntRect, 4>& posSpritesBalas) : 
+tipo(tipo), posSprites(posSprites), sprite(textura), tamanhoSprites(tamanhoSprites), posSpritesBalas(posSpritesBalas) {
     if(sprite.has_value()) sprite->setTextureRect(sf::IntRect(posSprites[0], tamanhoSprites));
 }
 
@@ -51,12 +51,16 @@ std::array<sf::Vector2i, 3> alien::getPosSprites() const & {
     return posSprites;
 }
 
+std::array<sf::IntRect, 4> alien::getPosSpritesBalas() const& {
+    return posSpritesBalas;
+}
+
 sf::Sprite alien::getSprite() const& {
     return sprite.value();
 }
 
 bool alien::checarColisao(const bala& bala) {
     bool colisaoX = bala.getPosition().x > sprite->getPosition().x && bala.getPosition().x < sprite->getPosition().x + sprite->getGlobalBounds().size.x;
-    bool colisaoY = bala.getPosition().y <= sprite->getPosition().y ;
+    bool colisaoY = bala.getPosition().y < sprite->getPosition().y && bala.getPosition().y > sprite->getPosition().y - sprite->getGlobalBounds().size.y;
     return colisaoX && colisaoY;
 }

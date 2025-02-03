@@ -30,17 +30,40 @@ int main() {
         sf::Vector2i { 55, 1 }
     };
 
+    const std::array<sf::IntRect, 4> posBalasTriangulo {
+        sf::IntRect{sf::Vector2i{1, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{6, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{11, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{16, 21}, sf::Vector2i{3, 8}}
+    };
+
     const std::array<sf::Vector2i, 3> posSpritesCirculo {
         sf::Vector2i { 19, 1 },
         sf::Vector2i { 19, 11 },
         sf::Vector2i { 55, 1 }
     };
 
+    const std::array<sf::IntRect, 4> posBalasCirculo {
+        sf::IntRect{sf::Vector2i{21, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{26, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{31, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{36, 21}, sf::Vector2i{3, 8}}
+    };
+
+
     const std::array<sf::Vector2i, 3> posSpritesquadrado {
         sf::Vector2i { 37, 1 },
         sf::Vector2i { 37, 11 },
         sf::Vector2i { 55, 1 }
     };
+
+    const std::array<sf::IntRect, 4> posBalasQuadrado {
+        sf::IntRect{sf::Vector2i{41, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{46, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{51, 21}, sf::Vector2i{3, 8}},
+        sf::IntRect{sf::Vector2i{56, 21}, sf::Vector2i{3, 8}}
+    };
+
 
     sf::Texture sprites;
     if(!sprites.loadFromFile(caminhoSprites)) erroArquivo(caminhoSprites.string());
@@ -51,15 +74,15 @@ int main() {
         for (int j = 0; j < 11; ++j) {
             switch (i) {
                 case 0:
-                    mapaInimigos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sprites, sf::Vector2i(16, 8));
+                    mapaInimigos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sprites, sf::Vector2i(16, 8), posBalasTriangulo);
                     break;
                 case 1:
                 case 2:
-                    mapaInimigos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sprites, sf::Vector2i(16, 8));
+                    mapaInimigos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sprites, sf::Vector2i(16, 8), posBalasCirculo);
                     break;
                 case 3:
                 case 4:
-                    mapaInimigos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sprites, sf::Vector2i(16, 8));
+                    mapaInimigos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sprites, sf::Vector2i(16, 8), posBalasQuadrado);
                     break;
             }
         }
@@ -70,24 +93,28 @@ int main() {
     // jogador
     const int quantidadeSprites = 3;
     const std::vector<sf::IntRect> posSprites {
-        sf::IntRect(sf::Vector2i(1, 49), sf::Vector2i(16, 8)),
-        sf::IntRect(sf::Vector2i(19, 49), sf::Vector2i(16, 8)),
-        sf::IntRect(sf::Vector2i(37, 49), sf::Vector2i(16, 8))
+        sf::IntRect(sf::Vector2i{1, 49}, sf::Vector2i{16, 8}),
+        sf::IntRect(sf::Vector2i{19, 49}, sf::Vector2i{16, 8}),
+        sf::IntRect(sf::Vector2i{37, 49}, sf::Vector2i{16, 8})
     };
     const sf::Vector2f tamanhoSprite(16.f, 8.f);
 
     janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
-    while (janela.getEstado()) {
+    while (janela.getEstado() && !jogador.getAnimando()) {
         if(gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
             jogador.restaurarJogador(janela);
         }
         janela.eventos(jogador);
+        jogador.removerBalasForaDaTela();
         jogador.atualizarBalas();
         jogador.calcularColisao(gerenciadorInimigos, janela);
+        gerenciadorInimigos.atirar();
         gerenciadorInimigos.atualizarPosicao();
+        gerenciadorInimigos.atualizarBalas();
+        gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
         janela.desenhar(jogador, gerenciadorInimigos);
     }
 

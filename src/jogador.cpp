@@ -18,12 +18,18 @@ jogador::jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::pa
     sprite.setOrigin(sf::Vector2f({tamanhoSprite.x/2.f, tamanhoSprite.y/2.f}));
     sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
     sprite.setScale(sf::Vector2f({escala, escala}));
+
+    balaCooldown.start();
 }
 
 void jogador::atualizarBalas() {
     for(auto& bala: balas) {
         bala.mover();
     }
+}
+
+bool jogador::getAnimando() const& {
+    return animando;
 }
 
 void jogador::mover(const enums::direcao dir) {
@@ -38,7 +44,21 @@ void jogador::mover(const enums::direcao dir) {
 }
 
 void jogador::atirar() {
-    balas.emplace_back(sprite.getPosition(), escala, qps);
+    if(balaCooldown.getElapsedTime().asSeconds() > 0.5f) {
+        balaCooldown.restart();
+        balas.emplace_back(sprite.getPosition(), escala, qps);
+    }
+}
+
+void jogador::morte(const std::optional<std::reference_wrapper<janela>>& janela) {
+    animando = 1;
+    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
+    balas.clear();
+    if(perdeu) {
+        perdeu = 0;
+        if(janela.has_value()) janela->get().restaurar();
+        mortes = 0;
+    }
 }
 
 void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela) {
@@ -90,7 +110,7 @@ std::vector<bala> jogador::getBalas() const& {
     return balas;
 }
 
-sf::Vector2f jogador::getPosicao() const& {
+sf::Vector2f jogador::getPosition() const& {
     return sprite.getPosition();
 }
 
@@ -114,6 +134,17 @@ sf::RectangleShape bala::getForma() const& {
 
 sf::Vector2f bala::getPosition() const& {
     return forma.getPosition();
+}
+
+void jogador::removerBalasForaDaTela() {
+    auto it = balas.begin();
+    while (it != balas.end()) {
+        if (it->getPosition().y  + it->getRectBala().size.y < 0.f ) {
+            it = balas.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
 void bala::mover() {
