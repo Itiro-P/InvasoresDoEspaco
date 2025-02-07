@@ -102,19 +102,22 @@ int main() {
     janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
     jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
-    while (janela.getEstado() && !jogador.getAnimando()) {
+    while (janela.getEstado()) {
         if(gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
-            jogador.restaurarJogador(janela);
+            jogador.restaurarJogador();
         }
         janela.eventos(jogador);
-        jogador.removerBalasForaDaTela();
-        jogador.atualizarBalas();
-        jogador.calcularColisao(gerenciadorInimigos, janela);
-        gerenciadorInimigos.atirar();
-        gerenciadorInimigos.atualizarPosicao();
-        gerenciadorInimigos.atualizarBalas();
-        gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
+        if(!janela.getTravar()) {
+            jogador.removerBalasForaDaTela();
+            jogador.atualizarBalas();
+            gerenciadorInimigos.atualizarBalas();
+            gerenciadorInimigos.atirar();
+            gerenciadorInimigos.atualizarPosicao();
+            gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
+            jogador.calcularColisao(gerenciadorInimigos, janela);
+        }
+        jogador.atualizarAnimacaoMorte(janela);
         janela.desenhar(jogador, gerenciadorInimigos);
     }
 

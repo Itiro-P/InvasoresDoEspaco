@@ -28,10 +28,6 @@ void jogador::atualizarBalas() {
     }
 }
 
-bool jogador::getAnimando() const& {
-    return animando;
-}
-
 void jogador::mover(const enums::direcao dir) {
     switch(dir) {
         case enums::direcao::direita:
@@ -51,14 +47,10 @@ void jogador::atirar() {
 }
 
 void jogador::morte(const std::optional<std::reference_wrapper<janela>>& janela) {
-    animando = 1;
-    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
-    balas.clear();
-    if(perdeu) {
-        perdeu = 0;
-        if(janela.has_value()) janela->get().restaurar();
-        mortes = 0;
-    }
+    janela->get().setTravar();
+    spriteAtual = 1;
+    contadorTrocas = 0;
+    sprite.setTextureRect(posSprites[spriteAtual]);
 }
 
 void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela) {
@@ -70,6 +62,7 @@ void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& 
             for (int coluna = 0; coluna < 11; ++coluna) {
                 auto& inimigo = gerenciadorInimigos.getMapa()[linha][coluna];
 
+
                 // Verifica se o inimigo está vivo
                 if (inimigo.getEstado() == enums::condicao::vivo) {
 
@@ -78,7 +71,6 @@ void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& 
                         inimigo.setEstado(enums::condicao::morrendo);
                         inimigo.setRect(2);
                         janela.setPontuacao(inimigo.getTipo());
-                        ++mortes;
                         colisaoDetectada = true;
                         break; // Sai do loop de colisão
                     }
@@ -96,14 +88,21 @@ void jogador::calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& 
     }
 }
 
-void jogador::restaurarJogador(const std::optional<std::reference_wrapper<janela>>& janela) {
-    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
-    balas.clear();
-    if(perdeu) {
-        perdeu = 0;
-        if(janela.has_value()) janela->get().restaurar();
-        mortes = 0;
+void jogador::atualizarAnimacaoMorte(janela& janela) {
+    if (!animando) return;
+
+    spriteAtual = (spriteAtual == 1 ? 2 : 1);
+    sprite.setTextureRect(posSprites[spriteAtual]);
+    ++contadorTrocas;
+
+    if (contadorTrocas >= 20) {
+        animando = false;
+        janela.perdeuJogo();
     }
+}
+
+void jogador::restaurarJogador() {
+    sprite.setPosition(sf::Vector2f({ resolucaoSistema.x/2.f - escala, resolucaoSistema.y*0.9f }));
 }
 
 std::vector<bala> jogador::getBalas() const& {
@@ -139,7 +138,7 @@ sf::Vector2f bala::getPosition() const& {
 void jogador::removerBalasForaDaTela() {
     auto it = balas.begin();
     while (it != balas.end()) {
-        if (it->getPosition().y  + it->getRectBala().size.y < 0.f ) {
+        if (it->getPosition().y + it->getRectBala().size.y < 0.f ) {
             it = balas.erase(it);
         } else {
             ++it;

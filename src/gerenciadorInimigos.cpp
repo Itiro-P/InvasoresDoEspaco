@@ -117,23 +117,24 @@ void gerenciadorInimigos::atirar() {
 
 void gerenciadorInimigos::calcularColisaoBalaInimigo(jogador& jogador, janela& janela) {
     auto it = balasInimigo.begin();
-    while(it != balasInimigo.end()) {
-        if(it->getPosition().y > resolucaoSistema.y) {
+    while (it != balasInimigo.end()) {
+
+        if (it->getPosition().y > resolucaoSistema.y) {
             it = balasInimigo.erase(it);
-        } else {
-            bool colisaoX = it->getPosition().x > jogador.getPosition().y && jogador.getPosition().x < jogador.getPosition().x + jogador.getSprite().getGlobalBounds().size.x;
-            bool colisaoY = it->getPosition().y < jogador.getPosition().y && jogador.getPosition().y > jogador.getPosition().y - jogador.getSprite().getGlobalBounds().size.y;
-            if(colisaoX && colisaoY) {
-                it = balasInimigo.erase(it);
-                jogador.morte(janela);
-            }
+            continue;
         }
+
+        if (jogador.getSprite().getGlobalBounds().contains(it->getPosition())) {
+            it = balasInimigo.erase(it);
+            jogador.morte(janela);
+            continue;
+        }
+
         ++it;
     }
 }
 
-int gerenciadorInimigos::getInimigosVivos() const &
-{
+int gerenciadorInimigos::getInimigosVivos() const& {
     return inimigosVivos;
 }
 
@@ -147,14 +148,17 @@ void gerenciadorInimigos::desenhar(sf::RenderWindow& janela) {
             if(inimigo.getEstado() != enums::condicao::morto) janela.draw(inimigo.getSprite());
         }
     }
+    for(const auto& bala: balasInimigo) {
+        janela.draw(bala.getSprite());
+    }
 }
 
-balaInimigo::balaInimigo(const sf::Vector2f &posicao, const float escala, const int qps, const sf::Texture& textura, const std::array<sf::IntRect, 4> &posSprites) : escala(escala) , qps(qps), textura(textura), sprite(textura) , posSprites(posSprites) {
-    sprite.setTexture(textura);
+balaInimigo::balaInimigo(const sf::Vector2f &posicao, const float escala, const int qps, const sf::Texture& textura, const std::array<sf::IntRect, 4> &posSprites) : escala(escala) , qps(qps), textura(textura), sprite(textura), posSprites(posSprites) {
     sprite.setTextureRect(posSprites[0]);
     sprite.setPosition(posicao);
     sprite.setScale(sf::Vector2f{escala, escala});
     velocidade = qps/15.f;
+    cooldownQuadros = qps/5;
 }
 
 sf::Sprite balaInimigo::getSprite() const& {
@@ -166,8 +170,13 @@ sf::Vector2f balaInimigo::getPosition() const& {
 }
 
 void balaInimigo::mover() {
-    if(spriteAtual == 3) spriteAtual = 0;
-    else ++spriteAtual;
+    if(contadorQuadros >= cooldownQuadros) {
+        contadorQuadros = 0;
+        if(spriteAtual == 3) spriteAtual = 0;
+        else ++spriteAtual;
+
+        sprite.setTextureRect(posSprites[spriteAtual]);
+    }
+    else ++contadorQuadros;
     sprite.move(sf::Vector2f{0.f, velocidade});
-    sprite.setTextureRect(posSprites[spriteAtual]);
 }

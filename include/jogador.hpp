@@ -34,10 +34,11 @@ class jogador {
     float velocidade;
     float escala;
     int qps;
-    int mortes = 0;
-    bool perdeu = 0;
-    bool animando = 0;
+    bool animando = false;
+    int spriteAtual = 0;
+    int contadorTrocas = 0;
     sf::Clock balaCooldown;
+    sf::Clock contador;
     std::vector<float> limites {0.f,0.f};
 
     std::vector<bala> balas;
@@ -45,12 +46,12 @@ class jogador {
     public:
     jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps);
     void atualizarBalas();
-    bool getAnimando() const&;
     void mover(const enums::direcao dir);
     void atirar();
     void morte(const std::optional<std::reference_wrapper<janela>>& janela);
     void calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela);
-    void restaurarJogador(const std::optional<std::reference_wrapper<janela>>& janela = std::nullopt);
+    void atualizarAnimacaoMorte(janela& janela);
+    void restaurarJogador();
     std::vector<bala> getBalas() const&;
     sf::Vector2f getPosition() const&;
     void removerBalasForaDaTela();

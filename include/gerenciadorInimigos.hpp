@@ -18,6 +18,8 @@ class balaInimigo {
     float velocidade;
     float escala;
     int qps;
+    int cooldownQuadros;
+    int contadorQuadros = 0;
 
     public:
     balaInimigo(const sf::Vector2f& posicao, const float escala, const int qps, const sf::Texture& textura, const std::array<sf::IntRect, 4>& posSprites);
