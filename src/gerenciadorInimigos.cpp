@@ -1,4 +1,4 @@
-#include <gerenciadorInimigos.hpp>
+#include <GerenciadorInimigos.hpp>
 #include <erroManuseio.hpp>
 #include <vector>
 #include <string>
@@ -9,13 +9,13 @@
 #include <janela.hpp>
 #include <random>
 
-gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::array<std::array<alien, 11>, 5>& mapaInimigos)
+GerenciadorInimigos::GerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::array<std::array<Alien, 11>, 5>& mapaInimigos)
 : resolucaoSistema(resolucaoSistema), qps(qps), mapa(mapaInimigos) {
     if(!textura.loadFromFile(caminhoTextura)) erroArquivo(caminhoTextura.string());
     escala = resolucaoSistema.x/200.f;
     velocidade = static_cast<float>(resolucaoSistema.x/qps);
-    limites[enums::direcao::esquerda] = resolucaoSistema.x*0.03f;
-    limites[enums::direcao::direita] = resolucaoSistema.x*0.9f;
+    limites[Direcao::Esquerda] = resolucaoSistema.x*0.03f;
+    limites[Direcao::Direita] = resolucaoSistema.x*0.9f;
     escala = resolucaoSistema.x/200.f;
     for(int linha = 0; linha < 5; ++linha) {
         for(int coluna = 0; coluna < 11; ++coluna) {
@@ -28,7 +28,7 @@ gerenciadorInimigos::gerenciadorInimigos(const std::filesystem::path &caminhoTex
     posTopoEsquerdoY = mapa.front().front().getPosition().y;
 }
 
-void gerenciadorInimigos::atualizarPosicao() {
+void GerenciadorInimigos::atualizarPosicao() {
     if (contadorQuadros >= qps) {
         contadorQuadros = 0;
         
@@ -38,10 +38,10 @@ void gerenciadorInimigos::atualizarPosicao() {
         
         bool atingiuLimite = false;
     
-        if (direcao == enums::direcao::direita) {
-            atingiuLimite = (posTopoEsquerdoX + tamanhoSprite.x * 10 * escala >= limites[enums::direcao::direita]);
+        if (direcao == Direcao::Direita) {
+            atingiuLimite = (posTopoEsquerdoX + tamanhoSprite.x * 10 * escala >= limites[Direcao::Direita]);
         } else {
-            atingiuLimite = (posTopoEsquerdoX <= limites[enums::direcao::esquerda]);
+            atingiuLimite = (posTopoEsquerdoX <= limites[Direcao::Esquerda]);
         }
         
         sf::Vector2f movimento;
@@ -49,21 +49,21 @@ void gerenciadorInimigos::atualizarPosicao() {
         if (atingiuLimite) {
             movimento = sf::Vector2f{0.f, velocidade / 2.f};
             posTopoEsquerdoY += velocidade / 2.f;
-            direcao = (direcao == enums::direcao::direita) ? enums::direcao::esquerda : enums::direcao::direita;
+            direcao = (direcao == Direcao::Direita) ? Direcao::Esquerda : Direcao::Direita;
         } else {
-            movimento = (direcao == enums::direcao::direita) ? sf::Vector2f{velocidade, 0.f} : sf::Vector2f{-velocidade, 0.f};
-            posTopoEsquerdoX += (direcao == enums::direcao::direita) ? velocidade : -velocidade;
+            movimento = (direcao == Direcao::Direita) ? sf::Vector2f{velocidade, 0.f} : sf::Vector2f{-velocidade, 0.f};
+            posTopoEsquerdoX += (direcao == Direcao::Direita) ? velocidade : -velocidade;
         }
         spriteAtual = (spriteAtual == 1 ? 0 : 1);
         for (auto& linha : mapa) {
             for (auto& inimigo : linha) {
-                if (inimigo.getEstado() == enums::condicao::vivo) {
+                if (inimigo.getEstado() == Condicao::Vivo) {
                     inimigo.inimigoMover(movimento);
                     inimigo.setRect(spriteAtual);
                 }
-                else if(inimigo.getEstado() == enums::condicao::morrendo) {
+                else if(inimigo.getEstado() == Condicao::Morrendo) {
                     inimigo.setRect(spriteMorte);
-                    inimigo.setEstado(enums::condicao::morto);
+                    inimigo.setEstado(Condicao::Morto);
                     --inimigosVivos;
                 }
             }
@@ -73,18 +73,19 @@ void gerenciadorInimigos::atualizarPosicao() {
     }
 }
 
-void gerenciadorInimigos::atualizarBalas() {
+void GerenciadorInimigos::atualizarBalas() {
     for(auto& bala : balasInimigo) bala.mover();
 }
 
-void gerenciadorInimigos::restaurarPosicoes() {
+void GerenciadorInimigos::restaurarPosicoes() {
     inimigosVivos = 55;
     spriteAtual = 0;
+    balasInimigo.clear();
     for(int linha = 0; linha < 5; ++linha) {
         for(int coluna = 0; coluna < 11; ++coluna) {
             sf::Vector2f posicao{resolucaoSistema.x*0.05f + tamanhoSprite.x*coluna*escala, resolucaoSistema.x/10.f + tamanhoSprite.y*linha*escala + escala*linha};
             mapa[linha][coluna].setPosition(posicao);
-            mapa[linha][coluna].setEstado(enums::condicao::vivo);
+            mapa[linha][coluna].setEstado(Condicao::Vivo);
             mapa[linha][coluna].setRect(spriteAtual);
         }
     }
@@ -92,7 +93,7 @@ void gerenciadorInimigos::restaurarPosicoes() {
     posTopoEsquerdoY = mapa.front().front().getPosition().y;
 }
 
-void gerenciadorInimigos::atirar() {
+void GerenciadorInimigos::atirar() {
     if(inimigosVivos == 0) return;
 
     if(contadorBalas >= qps) {
@@ -105,7 +106,7 @@ void gerenciadorInimigos::atirar() {
         do {
             linha = distribLinha(gen);
             coluna = distribColuna(gen);
-        } while (mapa[linha][coluna].getEstado() != enums::condicao::vivo);
+        } while (mapa[linha][coluna].getEstado() != Condicao::Vivo);
 
         sf::Vector2f posicaoInimigo = mapa[linha][coluna].getPosition();
         sf::Vector2f posicaoBala = posicaoInimigo + sf::Vector2f{tamanhoSprite.x * escala / 2.f, tamanhoSprite.y * escala};
@@ -115,7 +116,7 @@ void gerenciadorInimigos::atirar() {
     else ++contadorBalas;
 }
 
-void gerenciadorInimigos::calcularColisaoBalaInimigo(jogador& jogador, janela& janela) {
+void GerenciadorInimigos::calcularColisaoBalaInimigo(Jogador& jogador, Janela& janela) {
     auto it = balasInimigo.begin();
     while (it != balasInimigo.end()) {
 
@@ -134,18 +135,18 @@ void gerenciadorInimigos::calcularColisaoBalaInimigo(jogador& jogador, janela& j
     }
 }
 
-int gerenciadorInimigos::getInimigosVivos() const& {
+int GerenciadorInimigos::getInimigosVivos() const {
     return inimigosVivos;
 }
 
-std::array<std::array<alien, 11>, 5>& gerenciadorInimigos::getMapa() {
+std::array<std::array<Alien, 11>, 5>& GerenciadorInimigos::getMapa() {
     return mapa;
 }
 
-void gerenciadorInimigos::desenhar(sf::RenderWindow& janela) {
+void GerenciadorInimigos::desenhar(sf::RenderWindow& janela) {
     for(const auto& linha : mapa) {
         for(const auto& inimigo : linha) {
-            if(inimigo.getEstado() != enums::condicao::morto) janela.draw(inimigo.getSprite());
+            if(inimigo.getEstado() != Condicao::Morto) janela.draw(inimigo.getSprite());
         }
     }
     for(const auto& bala: balasInimigo) {
@@ -153,7 +154,7 @@ void gerenciadorInimigos::desenhar(sf::RenderWindow& janela) {
     }
 }
 
-balaInimigo::balaInimigo(const sf::Vector2f &posicao, const float escala, const int qps, const sf::Texture& textura, const std::array<sf::IntRect, 4> &posSprites) : escala(escala) , qps(qps), textura(textura), sprite(textura), posSprites(posSprites) {
+BalaInimigo::BalaInimigo(const sf::Vector2f &posicao, const float escala, const int qps, const sf::Texture& textura, const std::array<sf::IntRect, 4> &posSprites) : escala(escala) , qps(qps), textura(textura), sprite(textura), posSprites(posSprites) {
     sprite.setTextureRect(posSprites[0]);
     sprite.setPosition(posicao);
     sprite.setScale(sf::Vector2f{escala, escala});
@@ -161,15 +162,15 @@ balaInimigo::balaInimigo(const sf::Vector2f &posicao, const float escala, const 
     cooldownQuadros = qps/5;
 }
 
-sf::Sprite balaInimigo::getSprite() const& {
+sf::Sprite BalaInimigo::getSprite() const {
     return sprite;
 }
 
-sf::Vector2f balaInimigo::getPosition() const& {
+sf::Vector2f BalaInimigo::getPosition() const {
     return sprite.getPosition();
 }
 
-void balaInimigo::mover() {
+void BalaInimigo::mover() {
     if(contadorQuadros >= cooldownQuadros) {
         contadorQuadros = 0;
         if(spriteAtual == 3) spriteAtual = 0;

@@ -3,10 +3,8 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 
-namespace enums {
-    enum tipo { triangulo, circulo, quadrado };
+enum Tipo { Triangulo, Circulo, Quadrado };
 
-    enum condicao { morto, vivo , morrendo };
+enum Condicao { Morto, Vivo , Morrendo };
 
-    enum direcao { esquerda, direita };
-};
+enum Direcao { Esquerda, Direita };

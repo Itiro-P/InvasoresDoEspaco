@@ -7,7 +7,7 @@
 #include <jogador.hpp>
 #include <janela.hpp>
 #include <inimigo.hpp>
-#include <gerenciadorInimigos.hpp>
+#include <GerenciadorInimigos.hpp>
 #include <erroManuseio.hpp>
 #include <enums.hpp>
 
@@ -68,27 +68,27 @@ int main() {
     sf::Texture sprites;
     if(!sprites.loadFromFile(caminhoSprites)) erroArquivo(caminhoSprites.string());
 
-    std::array<std::array<alien, 11>, 5> mapaInimigos;
+    std::array<std::array<Alien, 11>, 5> mapaInimigos;
 
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 11; ++j) {
             switch (i) {
                 case 0:
-                    mapaInimigos[i][j] = alien(enums::tipo::triangulo, posSpritesTriangulo, sprites, sf::Vector2i(16, 8), posBalasTriangulo);
+                    mapaInimigos[i][j] = Alien(Tipo::Triangulo, posSpritesTriangulo, sprites, sf::Vector2i(16, 8), posBalasTriangulo);
                     break;
                 case 1:
                 case 2:
-                    mapaInimigos[i][j] = alien(enums::tipo::circulo, posSpritesCirculo, sprites, sf::Vector2i(16, 8), posBalasCirculo);
+                    mapaInimigos[i][j] = Alien(Tipo::Circulo, posSpritesCirculo, sprites, sf::Vector2i(16, 8), posBalasCirculo);
                     break;
                 case 3:
                 case 4:
-                    mapaInimigos[i][j] = alien(enums::tipo::quadrado, posSpritesquadrado, sprites, sf::Vector2i(16, 8), posBalasQuadrado);
+                    mapaInimigos[i][j] = Alien(Tipo::Quadrado, posSpritesquadrado, sprites, sf::Vector2i(16, 8), posBalasQuadrado);
                     break;
             }
         }
     }
 
-    gerenciadorInimigos gerenciadorInimigos(caminhoSprites, resolucao, qps, mapaInimigos);
+    GerenciadorInimigos gerenciadorInimigos(caminhoSprites, resolucao, qps, mapaInimigos);
 
     // jogador
     const int quantidadeSprites = 3;
@@ -99,15 +99,17 @@ int main() {
     };
     const sf::Vector2f tamanhoSprite(16.f, 8.f);
 
-    janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
-    jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
+    Janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
+    Jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
+    // game loop
     while (janela.getEstado()) {
         if(gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
             jogador.restaurarJogador();
         }
-        janela.eventos(jogador);
+        janela.eventos(jogador, gerenciadorInimigos);
+        janela.desenhar(jogador, gerenciadorInimigos);
         if(!janela.getTravar()) {
             jogador.removerBalasForaDaTela();
             jogador.atualizarBalas();
@@ -118,7 +120,6 @@ int main() {
             jogador.calcularColisao(gerenciadorInimigos, janela);
         }
         jogador.atualizarAnimacaoMorte(janela);
-        janela.desenhar(jogador, gerenciadorInimigos);
     }
 
     return 0;

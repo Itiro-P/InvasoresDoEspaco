@@ -6,60 +6,60 @@
 #include <vector>
 #include <filesystem>
 
-alien::alien(const enums::tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites, const std::array<sf::IntRect, 4>& posSpritesBalas) : 
+Alien::Alien(const Tipo tipo, const std::array<sf::Vector2i, 3> &posSprites, const sf::Texture& textura, const sf::Vector2i& tamanhoSprites, const std::array<sf::IntRect, 4>& posSpritesBalas) : 
 tipo(tipo), posSprites(posSprites), sprite(textura), tamanhoSprites(tamanhoSprites), posSpritesBalas(posSpritesBalas) {
     if(sprite.has_value()) sprite->setTextureRect(sf::IntRect(posSprites[0], tamanhoSprites));
 }
 
-sf::FloatRect alien::getRectAlien() const& {
+sf::FloatRect Alien::getRectAlien() const {
     return sf::FloatRect(sprite->getPosition(), sf::Vector2f{static_cast<float>(tamanhoSprites.x), static_cast<float>(tamanhoSprites.y)});
 }
 
-enums::tipo alien::getTipo() const& {
+Tipo Alien::getTipo() const {
     return tipo;
 }
 
-enums::condicao alien::getEstado() const& {
+Condicao Alien::getEstado() const {
     return estado;
 }
 
-void alien::setPosition(const sf::Vector2f &posicao) {
+void Alien::setPosition(const sf::Vector2f &posicao) {
     sprite->setPosition(posicao);
 }
 
-void alien::setScale(const sf::Vector2f &scale) {
+void Alien::setScale(const sf::Vector2f &scale) {
     sprite->setScale(scale);
 }
 
-void alien::setRect(const int idx) {
+void Alien::setRect(const int idx) {
     sprite->setTextureRect(sf::IntRect{posSprites[idx], tamanhoSprites});
 }
 
-void alien::inimigoMover(const sf::Vector2f &velocidade) {
+void Alien::inimigoMover(const sf::Vector2f &velocidade) {
     sprite->move(velocidade);
 }
 
-void alien::setEstado(const enums::condicao condicao) {
+void Alien::setEstado(const Condicao condicao) {
     estado = condicao;
 }
 
-sf::Vector2f alien::getPosition() const& {
+sf::Vector2f Alien::getPosition() const {
     return sprite->getPosition();
 }
 
-std::array<sf::Vector2i, 3> alien::getPosSprites() const & {
+std::array<sf::Vector2i, 3> Alien::getPosSprites() const {
     return posSprites;
 }
 
-std::array<sf::IntRect, 4> alien::getPosSpritesBalas() const& {
+std::array<sf::IntRect, 4> Alien::getPosSpritesBalas() const {
     return posSpritesBalas;
 }
 
-sf::Sprite alien::getSprite() const& {
+sf::Sprite Alien::getSprite() const {
     return sprite.value();
 }
 
-bool alien::checarColisao(const bala& bala) {
+bool Alien::checarColisao(const Bala& bala) {
     bool colisaoX = bala.getPosition().x > sprite->getPosition().x && bala.getPosition().x < sprite->getPosition().x + sprite->getGlobalBounds().size.x;
     bool colisaoY = bala.getPosition().y < sprite->getPosition().y && bala.getPosition().y > sprite->getPosition().y - sprite->getGlobalBounds().size.y;
     return colisaoX && colisaoY;

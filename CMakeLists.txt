@@ -18,7 +18,7 @@ add_executable(main
     src/janela.cpp
     src/inimigo.cpp
     src/erroManuseio.cpp
-    src/gerenciadorInimigos.cpp
+    src/GerenciadorInimigos.cpp
     #src/enums.cpp
 )
 

@@ -3,13 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <vector>
-#include <gerenciadorInimigos.hpp>
+#include <GerenciadorInimigos.hpp>
 #include <enums.hpp>
 
 
-class janela;
+class Janela;
 
-class bala {
+class Bala {
     sf::Vector2f posicao;
     sf::RectangleShape forma;
     float velocidade;
@@ -17,14 +17,15 @@ class bala {
     int qps;
 
     public:
-    bala(const sf::Vector2f& posicao, const float escala, const int qps);
-    sf::FloatRect getRectBala() const&;
-    sf::RectangleShape getForma() const&;
-    sf::Vector2f getPosition() const&;
+    Bala(const sf::Vector2f& posicao, const float escala, const int qps);
+    sf::FloatRect getRectBala() const;
+    sf::RectangleShape getForma() const;
+    sf::Vector2f getPosition() const;
     void mover();
 };
 
-class jogador {
+
+class Jogador {
     sf::Vector2u resolucaoSistema;
     sf::Vector2u tamanhoSprite;
     sf::Texture textura;
@@ -36,24 +37,26 @@ class jogador {
     int qps;
     bool animando = false;
     int spriteAtual = 0;
-    int contadorTrocas = 0;
     sf::Clock balaCooldown;
-    sf::Clock contador;
+    int contador = 0;
+    int contador2 = 0;
     std::vector<float> limites {0.f,0.f};
 
-    std::vector<bala> balas;
+    std::vector<Bala> balas;
 
     public:
-    jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps);
+    Jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps);
     void atualizarBalas();
-    void mover(const enums::direcao dir);
+    void mover(const Direcao dir);
     void atirar();
-    void morte(const std::optional<std::reference_wrapper<janela>>& janela);
-    void calcularColisao(gerenciadorInimigos& gerenciadorInimigos, janela& janela);
-    void atualizarAnimacaoMorte(janela& janela);
+    void morte(Janela &janela);
+    void calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Janela& janela);
+    void atualizarAnimacaoMorte(Janela& janela);
     void restaurarJogador();
-    std::vector<bala> getBalas() const&;
-    sf::Vector2f getPosition() const&;
+    std::vector<Bala> getBalas() const;
+    sf::Vector2f getPosition() const;
     void removerBalasForaDaTela();
-    sf::Sprite getSprite() const&;
+    sf::Sprite getSprite() const;
+    bool getAnimando() { return animando; };
+    bool animacaoConcluida() { return contador2 >= qps*2; };
 };
