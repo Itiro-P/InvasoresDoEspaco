@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <GerenciadorInimigos.hpp>
 #include <filesystem>
-#include <optional>
 #include <enums.hpp>
 #include <string>
 
@@ -42,8 +41,10 @@ void Janela::perdeuJogo() {
 }
 
 void Janela::restaurar() {
-    vidas = 3;
-    pontos = 0;
+    if(vidas == 0) {
+        vidas = 3;
+        pontos = 0;
+    }
     textoPerdeu.setString(L"");
     setTravar(0);
 }
@@ -66,6 +67,11 @@ void Janela::setPontuacao(const Tipo tipo) {
     }
 }
 
+void Janela::updateVidas() {
+    if(vidas > 0) --vidas;
+    textoVidas.setString("Vidas: " + std::to_string(vidas));
+}
+
 bool Janela::getTravar() const {
     return travar;
 }
@@ -75,14 +81,23 @@ void Janela::setTravar(bool estado) {
 }
 
 void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
+    if(travar && vidas > 0) {
+        if((jogador.animacaoConcluida())) {
+            restaurar();
+            jogador.restaurarJogador();
+            gerenciadorInimigos.restaurarPosicoes();
+        }
+    }
     instanciaJanela.handleEvents(
         [this](const sf::Event::Closed) { instanciaJanela.close(); },
         [this, &jogador, &gerenciadorInimigos](const sf::Event::KeyPressed tecla) {
             if(tecla.scancode == sf::Keyboard::Scancode::Escape) instanciaJanela.close();
-            if(tecla.scancode == sf::Keyboard::Scancode::Enter && travar && ( !jogador.getAnimando() || jogador.animacaoConcluida())) {
-                restaurar();
-                jogador.restaurarJogador();
-                gerenciadorInimigos.restaurarPosicoes();
+            if(tecla.scancode == sf::Keyboard::Scancode::Enter && travar) {
+                if((jogador.animacaoConcluida())) {
+                    restaurar();
+                    jogador.restaurarJogador();
+                    gerenciadorInimigos.restaurarPosicoes();
+                }
             }
 
             if(!travar) {
@@ -98,7 +113,7 @@ void Janela::desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos
     instanciaJanela.clear();
     instanciaJanela.draw(textoVidas);
     instanciaJanela.draw(textoPontos);
-    if(jogador.animacaoConcluida() && travar) {
+    if(jogador.animacaoConcluida() && travar && vidas == 0) {
         perdeuJogo();
         instanciaJanela.draw(textoPerdeu);
     }

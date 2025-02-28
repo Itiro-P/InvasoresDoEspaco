@@ -28,6 +28,7 @@ class Janela {
     void perdeuJogo();
     void restaurar();
     void setPontuacao(const Tipo tipo);
+    void updateVidas();
     bool getTravar() const;
     void setTravar(bool estado);
     void eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos);

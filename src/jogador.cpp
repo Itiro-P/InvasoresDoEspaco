@@ -48,6 +48,7 @@ void Jogador::atirar() {
 
 void Jogador::morte(Janela& janela) {
     janela.setTravar(1);
+    janela.updateVidas();
     animando = true;
     contador = 0;
     contador2 = 0;
