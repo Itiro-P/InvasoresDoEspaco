@@ -40,7 +40,7 @@ Caso use outro sistema operacional. Você precisará baixar o projeto e compilar
 ## Passos
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/InvasoresDoEspaco.git
+   git clone https://github.com/Ichiro-P/InvasoresDoEspaco.git
 
 2. Navegue até o repositório do projeto:
    ```bash
