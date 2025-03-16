@@ -1,4 +1,7 @@
+toolchain-mingw64.cmake
 build
+build-windows
+build-linux
 out
 .cache
 .idea
