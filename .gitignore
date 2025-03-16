@@ -1,4 +1,4 @@
-toolchain-mingw64.cmake
+toolchain-windows.cmake
 build
 build-windows
 build-linux
