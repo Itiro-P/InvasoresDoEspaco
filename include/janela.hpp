@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <optional>
@@ -30,6 +30,8 @@ class Janela {
     void setPontuacao(const Tipo tipo);
     void updateVidas();
     bool getTravar() const;
+    int getVidas() const { return vidas; };
+    void setVidas(const int vidas) { this->vidas = vidas; };
     void setTravar(bool estado);
     void eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos);
     void desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos);

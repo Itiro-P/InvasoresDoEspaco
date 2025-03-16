@@ -35,7 +35,7 @@ Este é um clone do jogo Space Invaders do Atari. Aqui você controla uma nave e
 
 As releases foram exportadas para o sistema Windows; assim seus usuários podem apenas baixar o jogo na página de releases, extrair e abrir o main.exe.
 
-Caso use outro sistema operacional. Você precisará baixar o projeto e compilar para sua máquina. O projeto usa C++ 17, SFML 3.0 e no mínimo o Cmake 3.5 para rodar.
+Caso use outro sistema operacional. Você precisará baixar o projeto e compilar para sua máquina. O projeto usa C++ 17, SFML 3.0 e no mínimo o Cmake 3.30 para rodar.
 
 ## Passos
 1. Clone o repositório:

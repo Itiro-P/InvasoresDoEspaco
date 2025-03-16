@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <janela.hpp>
 #include <enums.hpp>
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <string>
 
 Jogador::Jogador(const sf::Vector2u& resolucaoSistema, const std::filesystem::path& caminhoTextura, const int quantidadeSprites, const std::vector<sf::IntRect>& posSprites, const sf::Vector2f& tamanhoSprite, const int qps)
@@ -49,6 +49,7 @@ void Jogador::atirar() {
 void Jogador::morte(Janela& janela) {
     janela.setTravar(1);
     janela.updateVidas();
+    if(janela.getVidas() > 0) janela.setPontuacao(Tipo::Reset);
     animando = true;
     contador = 0;
     contador2 = 0;

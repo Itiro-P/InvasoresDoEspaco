@@ -1,4 +1,4 @@
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <erroManuseio.hpp>
 #include <vector>
 #include <string>
@@ -78,6 +78,9 @@ void GerenciadorInimigos::atualizarBalas() {
 }
 
 void GerenciadorInimigos::restaurarPosicoes() {
+    contadorQuadros = 0;
+    contadorBalas = 0;
+    direcao = Direcao::Esquerda;
     inimigosVivos = 55;
     spriteAtual = 0;
     balasInimigo.clear();
@@ -94,26 +97,40 @@ void GerenciadorInimigos::restaurarPosicoes() {
 }
 
 void GerenciadorInimigos::atirar() {
-    if(inimigosVivos == 0) return;
+    if (inimigosVivos == 0) return;
 
-    if(contadorBalas >= qps) {
-        contadorBalas = 0;
-        std::random_device seed;
-        std::mt19937 gen(seed());
-        std::uniform_int_distribution<> distribLinha(0, 4);  // Linhas de 0 a 4
-        std::uniform_int_distribution<> distribColuna(0, 10); // Colunas de 0 a 10
-        int linha, coluna;
-        do {
-            linha = distribLinha(gen);
-            coluna = distribColuna(gen);
-        } while (mapa[linha][coluna].getEstado() != Condicao::Vivo);
+    // Contador para controlar a frequência de tiros (ex: 1 tiro por segundo)
+    contadorBalas++;
+    if (contadorBalas < qps) return; // Ajuste "qps" conforme necessário
+    contadorBalas = 0;
 
-        sf::Vector2f posicaoInimigo = mapa[linha][coluna].getPosition();
-        sf::Vector2f posicaoBala = posicaoInimigo + sf::Vector2f{tamanhoSprite.x * escala / 2.f, tamanhoSprite.y * escala};
-
-        balasInimigo.emplace_back(posicaoBala, escala, qps, textura, mapa[linha][coluna].getPosSpritesBalas());
+    // Lista de inimigos vivos
+    std::vector<std::pair<int, int>> inimigosVivosPosicoes;
+    for (int linha = 0; linha < 5; ++linha) {
+        for (int coluna = 0; coluna < 11; ++coluna) {
+            if (mapa[linha][coluna].getEstado() == Condicao::Vivo) {
+                inimigosVivosPosicoes.emplace_back(linha, coluna);
+            }
+        }
     }
-    else ++contadorBalas;
+
+    // Não atirar se não houver inimigos vivos
+    if (inimigosVivosPosicoes.empty()) return;
+
+    // Selecionar um inimigo vivo aleatório
+    static std::mt19937 gen(std::random_device{}());
+    std::uniform_int_distribution<> distrib(0, inimigosVivosPosicoes.size() - 1);
+    int idx = distrib(gen);
+    auto [linha, coluna] = inimigosVivosPosicoes[idx];
+
+    // Posição da bala
+    sf::Vector2f posicaoInimigo = mapa[linha][coluna].getPosition();
+    sf::Vector2f posicaoBala = posicaoInimigo + sf::Vector2f{
+        tamanhoSprite.x * escala / 2.f,
+        tamanhoSprite.y * escala
+    };
+
+    balasInimigo.emplace_back(posicaoBala, escala, qps, textura, mapa[linha][coluna].getPosSpritesBalas());
 }
 
 void GerenciadorInimigos::calcularColisaoBalaInimigo(Jogador& jogador, Janela& janela) {

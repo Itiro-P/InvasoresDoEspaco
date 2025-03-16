@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <vector>
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <enums.hpp>
 
 

@@ -2,7 +2,7 @@
 #include <jogador.hpp>
 #include <erroManuseio.hpp>
 #include <SFML/Graphics.hpp>
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <filesystem>
 #include <enums.hpp>
 #include <string>
@@ -41,10 +41,8 @@ void Janela::perdeuJogo() {
 }
 
 void Janela::restaurar() {
-    if(vidas == 0) {
-        vidas = 3;
-        pontos = 0;
-    }
+    if(vidas == 0) vidas = 3;
+    setPontuacao(Tipo::Reset);
     textoPerdeu.setString(L"");
     setTravar(0);
 }
@@ -60,9 +58,12 @@ void Janela::setPontuacao(const Tipo tipo) {
         case Tipo::Triangulo:
         pontos += 40;
         break;
+        case Tipo::Reset:
+        pontos = 0;
+        break;
     }
     textoPontos.setString("Pontos: " + std::to_string(pontos));
-    if(pontos % 1500 == 0 && vidas < 3 && vidas != 0) {
+    if(pontos != 0 && pontos % 1500 == 0 && vidas < 3 && vidas != 0) {
         textoVidas.setString("Vidas: " + std::to_string(++vidas));
     }
 }
@@ -82,7 +83,7 @@ void Janela::setTravar(bool estado) {
 
 void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
     if(travar && vidas > 0) {
-        if((jogador.animacaoConcluida())) {
+        if(jogador.animacaoConcluida()) {
             restaurar();
             jogador.restaurarJogador();
             gerenciadorInimigos.restaurarPosicoes();
@@ -96,6 +97,8 @@ void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos)
                 if((jogador.animacaoConcluida())) {
                     restaurar();
                     jogador.restaurarJogador();
+                    setVidas(3);
+                    textoVidas.setString("Vidas: " + std::to_string(vidas));
                     gerenciadorInimigos.restaurarPosicoes();
                 }
             }

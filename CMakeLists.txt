@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.30)
 project(InvasoresDoEspaco LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 
 include(FetchContent)
 FetchContent_Declare(SFML
@@ -18,8 +21,7 @@ add_executable(main
     src/janela.cpp
     src/inimigo.cpp
     src/erroManuseio.cpp
-    src/GerenciadorInimigos.cpp
-    #src/enums.cpp
+    src/gerenciadorInimigos.cpp
 )
 
 # Diretório com os arquivos de recursos

@@ -7,7 +7,7 @@
 #include <jogador.hpp>
 #include <janela.hpp>
 #include <inimigo.hpp>
-#include <GerenciadorInimigos.hpp>
+#include <gerenciadorInimigos.hpp>
 #include <erroManuseio.hpp>
 #include <enums.hpp>
 
@@ -21,7 +21,7 @@ int main() {
     const sf::Vector2u resolucao(1280, 720);
     const int qps = 60; // padrao = 60
     const int vidasIniciais = 3; // padrao = 3
-    const int pontosIniciais = 0; // padrao = 0
+    int pontosIniciais = 0; // padrao = 0
 
     // aliens
     const std::array<sf::Vector2i, 3> posSpritesTriangulo {
@@ -102,24 +102,32 @@ int main() {
     Janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
     Jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
-    // game loop
+    // Game loop
     while (janela.getEstado()) {
-        if(gerenciadorInimigos.getInimigosVivos() == 0) {
+        if (gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
             jogador.restaurarJogador();
         }
+
+        // Processa eventos e atualizações
         janela.eventos(jogador, gerenciadorInimigos);
-        janela.desenhar(jogador, gerenciadorInimigos);
-        if(!janela.getTravar()) {
+        
+        if (!janela.getTravar()) {
+            // Atualiza lógica do jogo apenas se não estiver travado
             jogador.removerBalasForaDaTela();
             jogador.atualizarBalas();
-            gerenciadorInimigos.atualizarBalas();
-            gerenciadorInimigos.atirar();
-            gerenciadorInimigos.atualizarPosicao();
-            gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
+            if(gerenciadorInimigos.getInimigosVivos() > 0) {
+                gerenciadorInimigos.atualizarBalas();
+                gerenciadorInimigos.atirar();
+                gerenciadorInimigos.atualizarPosicao();
+                gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
+            }
             jogador.calcularColisao(gerenciadorInimigos, janela);
         }
+
+        // Atualiza animações e desenha
         jogador.atualizarAnimacaoMorte(janela);
+        janela.desenhar(jogador, gerenciadorInimigos);
     }
 
     return 0;
