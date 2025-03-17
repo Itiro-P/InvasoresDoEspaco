@@ -5,7 +5,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 #include <jogador.hpp>
-#include <janela.hpp>
+#include <interface.hpp>
 #include <inimigo.hpp>
 #include <gerenciadorInimigos.hpp>
 #include <erroManuseio.hpp>
@@ -21,7 +21,7 @@ int main() {
     const sf::Vector2u resolucao(1280, 720);
     const int qps = 60; // padrao = 60
     const int vidasIniciais = 3; // padrao = 3
-    int pontosIniciais = 0; // padrao = 0
+    const int pontosIniciais = 0; // padrao = 0
 
     // aliens
     const std::array<sf::Vector2i, 3> posSpritesTriangulo {
@@ -99,20 +99,20 @@ int main() {
     };
     const sf::Vector2f tamanhoSprite(16.f, 8.f);
 
-    Janela janela(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
+    Interface interface(resolucao, caminhoIcone, caminhoFonte, vidasIniciais, pontosIniciais, qps);
     Jogador jogador(resolucao, caminhoSprites, quantidadeSprites, posSprites, tamanhoSprite, qps);
 
     // Game loop
-    while (janela.getEstado()) {
+    while (interface.getEstado()) {
         if (gerenciadorInimigos.getInimigosVivos() == 0) {
             gerenciadorInimigos.restaurarPosicoes();
             jogador.restaurarJogador();
         }
 
         // Processa eventos e atualizações
-        janela.eventos(jogador, gerenciadorInimigos);
+        interface.eventos(jogador, gerenciadorInimigos);
         
-        if (!janela.getTravar()) {
+        if (!interface.getTravar()) {
             // Atualiza lógica do jogo apenas se não estiver travado
             jogador.removerBalasForaDaTela();
             jogador.atualizarBalas();
@@ -120,14 +120,14 @@ int main() {
                 gerenciadorInimigos.atualizarBalas();
                 gerenciadorInimigos.atirar();
                 gerenciadorInimigos.atualizarPosicao();
-                gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, janela);
+                gerenciadorInimigos.calcularColisaoBalaInimigo(jogador, interface);
             }
-            jogador.calcularColisao(gerenciadorInimigos, janela);
+            jogador.calcularColisao(gerenciadorInimigos, interface);
         }
 
         // Atualiza animações e desenha
-        jogador.atualizarAnimacaoMorte(janela);
-        janela.desenhar(jogador, gerenciadorInimigos);
+        jogador.atualizarAnimacaoMorte(interface);
+        interface.desenhar(jogador, gerenciadorInimigos);
     }
 
     return 0;

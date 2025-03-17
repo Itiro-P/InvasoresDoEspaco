@@ -7,10 +7,10 @@
 #include <enums.hpp>
 
 
-class Janela;
+class Interface;
 
 class Bala {
-    sf::Vector2f posicao;
+    sf::Vector2f posicao;   
     sf::RectangleShape forma;
     float velocidade;
     float escala;
@@ -49,9 +49,9 @@ class Jogador {
     void atualizarBalas();
     void mover(const Direcao dir);
     void atirar();
-    void morte(Janela &janela);
-    void calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Janela& janela);
-    void atualizarAnimacaoMorte(Janela& janela);
+    void morte(Interface &janela);
+    void calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Interface& janela);
+    void atualizarAnimacaoMorte(Interface& janela);
     void restaurarJogador();
     std::vector<Bala> getBalas() const;
     sf::Vector2f getPosition() const;

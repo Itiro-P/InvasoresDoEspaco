@@ -2,7 +2,7 @@
 #include <erroManuseio.hpp>
 #include <SFML/Graphics.hpp>
 #include <filesystem>
-#include <janela.hpp>
+#include <interface.hpp>
 #include <enums.hpp>
 #include <gerenciadorInimigos.hpp>
 #include <string>
@@ -46,7 +46,7 @@ void Jogador::atirar() {
     }
 }
 
-void Jogador::morte(Janela& janela) {
+void Jogador::morte(Interface& janela) {
     janela.setTravar(1);
     janela.updateVidas();
     if(janela.getVidas() > 0) janela.setPontuacao(Tipo::Reset);
@@ -57,7 +57,7 @@ void Jogador::morte(Janela& janela) {
     sprite.setTextureRect(posSprites[spriteAtual]);
 }
 
-void Jogador::calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Janela& janela) {
+void Jogador::calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Interface& janela) {
     auto it = balas.begin();
     while (it != balas.end()) {
         bool colisaoDetectada = false;
@@ -92,7 +92,7 @@ void Jogador::calcularColisao(GerenciadorInimigos& GerenciadorInimigos, Janela& 
     }
 }
 
-void Jogador::atualizarAnimacaoMorte(Janela& janela) {
+void Jogador::atualizarAnimacaoMorte(Interface& janela) {
     if (!animando) return;
 
     if(contador >= qps/4 && contador2 < qps*2) {

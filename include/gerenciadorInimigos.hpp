@@ -7,7 +7,7 @@
 
 class Jogador;
 
-class Janela;
+class Interface;
 
 class BalaInimigo {
     sf::Vector2f posicao;
@@ -53,7 +53,7 @@ public:
     void atualizarBalas();
     void restaurarPosicoes();
     void atirar();
-    void calcularColisaoBalaInimigo(Jogador& jogador, Janela& janela);
+    void calcularColisaoBalaInimigo(Jogador& jogador, Interface& janela);
     int getInimigosVivos() const;
     std::array<std::array<Alien, 11>, 5>& getMapa();
     void desenhar(sf::RenderWindow& janela);

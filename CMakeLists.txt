@@ -18,7 +18,7 @@ FetchContent_MakeAvailable(SFML)
 add_executable(main 
     src/main.cpp
     src/jogador.cpp
-    src/janela.cpp
+    src/interface.cpp
     src/inimigo.cpp
     src/erroManuseio.cpp
     src/gerenciadorInimigos.cpp

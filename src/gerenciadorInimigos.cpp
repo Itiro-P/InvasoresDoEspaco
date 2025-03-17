@@ -6,7 +6,7 @@
 #include <enums.hpp>
 #include <SFML/Graphics.hpp>
 #include <jogador.hpp>
-#include <janela.hpp>
+#include <interface.hpp>
 #include <random>
 
 GerenciadorInimigos::GerenciadorInimigos(const std::filesystem::path &caminhoTextura, const sf::Vector2u &resolucaoSistema, const int qps, const std::array<std::array<Alien, 11>, 5>& mapaInimigos)
@@ -133,7 +133,7 @@ void GerenciadorInimigos::atirar() {
     balasInimigo.emplace_back(posicaoBala, escala, qps, textura, mapa[linha][coluna].getPosSpritesBalas());
 }
 
-void GerenciadorInimigos::calcularColisaoBalaInimigo(Jogador& jogador, Janela& janela) {
+void GerenciadorInimigos::calcularColisaoBalaInimigo(Jogador& jogador, Interface& janela) {
     auto it = balasInimigo.begin();
     while (it != balasInimigo.end()) {
 

@@ -9,8 +9,8 @@
 
 class Jogador;
 
-class Janela {
-    sf::RenderWindow instanciaJanela;
+class Interface {
+    sf::RenderWindow janela;
     sf::Vector2u resolucao;
     sf::Image icone;
     sf::Font fonte;
@@ -23,7 +23,7 @@ class Janela {
     bool travar = false;
 
     public:
-    Janela(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais = 3, const int pontosIniciais = 0, const int qps = 60);
+    Interface(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais = 3, const int pontosIniciais = 0, const int qps = 60);
     bool getEstado() const;
     void perdeuJogo();
     void restaurar();

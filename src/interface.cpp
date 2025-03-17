@@ -1,4 +1,4 @@
-#include <janela.hpp>
+#include <interface.hpp>
 #include <jogador.hpp>
 #include <erroManuseio.hpp>
 #include <SFML/Graphics.hpp>
@@ -7,13 +7,13 @@
 #include <enums.hpp>
 #include <string>
 
-Janela::Janela(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais, const int pontosIniciais, const int qps) 
+Interface::Interface(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais, const int pontosIniciais, const int qps) 
 : vidas(vidasIniciais), pontos(pontosIniciais), resolucao(resolucao), textoVidas(fonte), textoPontos(fonte), textoPerdeu(fonte), qps(qps) {
     if (!fonte.openFromFile(caminhoFonte.string())) erroArquivo(caminhoFonte.string());
     if (!icone.loadFromFile(caminhoIcone.string())) erroArquivo(caminhoIcone.string());
-    instanciaJanela.create(sf::VideoMode({resolucao.x, resolucao.y}), L"Invasores do Espaço", sf::Style::Close);
-    instanciaJanela.setFramerateLimit(qps);
-    instanciaJanela.setIcon(icone);
+    janela.create(sf::VideoMode({resolucao.x, resolucao.y}), L"Invasores do Espaço", sf::Style::Close);
+    janela.setFramerateLimit(qps);
+    janela.setIcon(icone);
 
     textoVidas.setString("Vidas: " + std::to_string(vidas));
     textoVidas.setFillColor(sf::Color::White);
@@ -32,22 +32,22 @@ Janela::Janela(const sf::Vector2u& resolucao, const std::filesystem::path& camin
 
 }
 
-bool Janela::getEstado() const {
-    return instanciaJanela.isOpen();
+bool Interface::getEstado() const {
+    return janela.isOpen();
 }
 
-void Janela::perdeuJogo() {
+void Interface::perdeuJogo() {
     textoPerdeu.setString(L"Você perdeu.\nPontuação total: " + std::to_wstring(pontos) + L"\nPressione ENTER para recomeçar:");
 }
 
-void Janela::restaurar() {
+void Interface::restaurar() {
     if(vidas == 0) vidas = 3;
     setPontuacao(Tipo::Reset);
     textoPerdeu.setString(L"");
     setTravar(0);
 }
 
-void Janela::setPontuacao(const Tipo tipo) {
+void Interface::setPontuacao(const Tipo tipo) {
     switch (tipo) {
         case Tipo::Circulo:
         pontos += 10;
@@ -68,20 +68,20 @@ void Janela::setPontuacao(const Tipo tipo) {
     }
 }
 
-void Janela::updateVidas() {
+void Interface::updateVidas() {
     if(vidas > 0) --vidas;
     textoVidas.setString("Vidas: " + std::to_string(vidas));
 }
 
-bool Janela::getTravar() const {
+bool Interface::getTravar() const {
     return travar;
 }
 
-void Janela::setTravar(bool estado) {
+void Interface::setTravar(bool estado) {
     travar = estado;
 }
 
-void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
+void Interface::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
     if(travar && vidas > 0) {
         if(jogador.animacaoConcluida()) {
             restaurar();
@@ -89,10 +89,10 @@ void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos)
             gerenciadorInimigos.restaurarPosicoes();
         }
     }
-    instanciaJanela.handleEvents(
-        [this](const sf::Event::Closed) { instanciaJanela.close(); },
+    janela.handleEvents(
+        [this](const sf::Event::Closed) { janela.close(); },
         [this, &jogador, &gerenciadorInimigos](const sf::Event::KeyPressed tecla) {
-            if(tecla.scancode == sf::Keyboard::Scancode::Escape) instanciaJanela.close();
+            if(tecla.scancode == sf::Keyboard::Scancode::Escape) janela.close();
             if(tecla.scancode == sf::Keyboard::Scancode::Enter && travar) {
                 if((jogador.animacaoConcluida())) {
                     restaurar();
@@ -112,18 +112,18 @@ void Janela::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos)
     );
 }
 
-void Janela::desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
-    instanciaJanela.clear();
-    instanciaJanela.draw(textoVidas);
-    instanciaJanela.draw(textoPontos);
+void Interface::desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
+    janela.clear();
+    janela.draw(textoVidas);
+    janela.draw(textoPontos);
     if(jogador.animacaoConcluida() && travar && vidas == 0) {
         perdeuJogo();
-        instanciaJanela.draw(textoPerdeu);
+        janela.draw(textoPerdeu);
     }
-    instanciaJanela.draw(jogador.getSprite());
+    janela.draw(jogador.getSprite());
     for(const auto& bala: jogador.getBalas()) {
-        instanciaJanela.draw(bala.getForma());
+        janela.draw(bala.getForma());
     }
-    gerenciadorInimigos.desenhar(instanciaJanela);
-    instanciaJanela.display();
+    gerenciadorInimigos.desenhar(janela);
+    janela.display();
 }
