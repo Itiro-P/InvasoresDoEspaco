@@ -17,11 +17,13 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(main 
     src/main.cpp
-    src/jogador.cpp
+    src/ator.cpp
     src/interface.cpp
-    src/inimigo.cpp
+    src/projetil.cpp
     src/erroManuseio.cpp
-    src/gerenciadorInimigos.cpp
+    src/gerenciadorAliens.cpp
+    src/recursoManager.cpp
+    src/gerenciadorProjeteis.cpp
 )
 
 # Diretório com os arquivos de recursos

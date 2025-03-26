@@ -1,38 +1,40 @@
 #pragma once
 
-#include <gerenciadorInimigos.hpp>
 #include <SFML/Graphics.hpp>
 #include <filesystem>
-#include <optional>
-#include <string>
 #include <enums.hpp>
+#include <ator.hpp>
+#include <gerenciadorAliens.hpp>
+#include <gerenciadorProjeteis.hpp>
+#include <recursoManager.hpp>
+#include <estadoJogador.hpp>
 
-class Jogador;
-
+// Faz a lógica de jogo e renderiza a tela
 class Interface {
+    std::shared_ptr<RecursoManager> recursoManagerPtr = nullptr;
+    std::unique_ptr<GerenciadorAliens> gerenciadorAliensPtr = nullptr;
+    std::unique_ptr<GerenciadorProjeteis> gerenciadorProjeteisPtr = nullptr;
+    std::unique_ptr<Jogador> jogadorPtr = nullptr;
+    std::unique_ptr<EstadoJogador> estadoJogadorPtr = nullptr;
     sf::RenderWindow janela;
-    sf::Vector2u resolucao;
     sf::Image icone;
     sf::Font fonte;
     sf::Text textoVidas;
     sf::Text textoPontos;
     sf::Text textoPerdeu;
-    int vidas;
-    int pontos;
-    int qps;
     bool travar = false;
 
     public:
-    Interface(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais = 3, const int pontosIniciais = 0, const int qps = 60);
+    Interface(RecursoManager &recursoManager, GerenciadorAliens &gerenciadorAliens, GerenciadorProjeteis &gerenciadorProjeteis, Jogador &jogador, EstadoJogador &estadoJogador);
     bool getEstado() const;
     void perdeuJogo();
     void restaurar();
     void setPontuacao(const Tipo tipo);
     void updateVidas();
+    void atualizarProjeteis();
+    void atualizarColisoes();
     bool getTravar() const;
-    int getVidas() const { return vidas; };
-    void setVidas(const int vidas) { this->vidas = vidas; };
     void setTravar(bool estado);
-    void eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos);
-    void desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos);
+    void eventos();
+    void desenhar();
 };

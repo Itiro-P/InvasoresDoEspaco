@@ -1,7 +1,10 @@
 #pragma once
 
+// Define os tipos de Aliens e um Reset de pontucação
 enum Tipo { Triangulo, Circulo, Quadrado, Reset};
 
-enum Condicao { Morto, Vivo , Morrendo };
+// Define os estados dos Aliens
+enum Estado { Morto, Vivo , Morrendo };
 
+// Direção
 enum Direcao { Esquerda, Direita };

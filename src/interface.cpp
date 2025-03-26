@@ -1,35 +1,34 @@
 #include <interface.hpp>
-#include <jogador.hpp>
 #include <erroManuseio.hpp>
-#include <SFML/Graphics.hpp>
-#include <gerenciadorInimigos.hpp>
 #include <filesystem>
-#include <enums.hpp>
 #include <string>
 
-Interface::Interface(const sf::Vector2u& resolucao, const std::filesystem::path& caminhoIcone, const std::filesystem::path& caminhoFonte, const int vidasIniciais, const int pontosIniciais, const int qps) 
-: vidas(vidasIniciais), pontos(pontosIniciais), resolucao(resolucao), textoVidas(fonte), textoPontos(fonte), textoPerdeu(fonte), qps(qps) {
-    if (!fonte.openFromFile(caminhoFonte.string())) erroArquivo(caminhoFonte.string());
-    if (!icone.loadFromFile(caminhoIcone.string())) erroArquivo(caminhoIcone.string());
-    janela.create(sf::VideoMode({resolucao.x, resolucao.y}), L"Invasores do Espaço", sf::Style::Close);
-    janela.setFramerateLimit(qps);
+Interface::Interface(RecursoManager &recursoManager, GerenciadorAliens &gerenciadorAliens, GerenciadorProjeteis &gerenciadorProjeteis, Jogador &jogador, EstadoJogador &estadoJogador)
+: recursoManagerPtr(std::make_shared<RecursoManager>(recursoManager)), 
+    gerenciadorAliensPtr(std::make_unique<GerenciadorAliens>(std::move(gerenciadorAliens))), 
+    gerenciadorProjeteisPtr(std::make_unique<GerenciadorProjeteis>(std::move(gerenciadorProjeteis))), 
+    jogadorPtr(std::make_unique<Jogador>(std::move(jogador))), 
+    estadoJogadorPtr(std::make_unique<EstadoJogador>(std::move(estadoJogador))), textoVidas(fonte), textoPontos(fonte), textoPerdeu(fonte) {
+    if (!fonte.openFromFile(dir::CaminhoFonte)) erroArquivo(dir::CaminhoFonte.string());
+    if (!icone.loadFromFile(dir::CaminhoIcone)) erroArquivo(dir::CaminhoIcone.string());
+    janela.create(sf::VideoMode(recursoManagerPtr->getResolucaoSistema()), L"Invasores do Espaço", sf::Style::Close);
+    janela.setFramerateLimit(recursoManagerPtr->getQps());
     janela.setIcon(icone);
 
-    textoVidas.setString("Vidas: " + std::to_string(vidas));
+    textoVidas.setString("Vidas: " + std::to_string(estadoJogadorPtr->getVidas()));
     textoVidas.setFillColor(sf::Color::White);
-    textoVidas.setCharacterSize(static_cast<unsigned int>(resolucao.x / 40));
-    textoVidas.setPosition(sf::Vector2f({resolucao.x*0.85f , 10.f}));
+    textoVidas.setCharacterSize(static_cast<unsigned int>(recursoManagerPtr->getResolucaoSistema().x / 40));
+    textoVidas.setPosition(sf::Vector2f({recursoManagerPtr->getResolucaoSistema().x*0.85f , 10.f}));
 
-    textoPontos.setString("Pontos: " + std::to_string(pontos));
+    textoPontos.setString("Pontos: " + std::to_string(estadoJogadorPtr->getPontos()));
     textoPontos.setFillColor(sf::Color::White);
-    textoPontos.setCharacterSize(static_cast<unsigned int>(resolucao.x / 40));
-    textoPontos.setPosition(sf::Vector2f({resolucao.x*0.01f , 10.f}));
+    textoPontos.setCharacterSize(static_cast<unsigned int>(recursoManagerPtr->getResolucaoSistema().x / 40));
+    textoPontos.setPosition(sf::Vector2f({recursoManagerPtr->getResolucaoSistema().x*0.01f , 10.f}));
 
     textoPerdeu.setFillColor(sf::Color::White);
-    textoPerdeu.setCharacterSize(static_cast<unsigned int>(resolucao.x / 40));
+    textoPerdeu.setCharacterSize(static_cast<unsigned int>(recursoManagerPtr->getResolucaoSistema().x / 40));
     textoPerdeu.setOrigin(textoPerdeu.getGlobalBounds().size / 2.f);
-    textoPerdeu.setPosition(sf::Vector2f{resolucao.x / 2.f, 10.f});
-
+    textoPerdeu.setPosition(sf::Vector2f{recursoManagerPtr->getResolucaoSistema().x / 2.f, 10.f});
 }
 
 bool Interface::getEstado() const {
@@ -37,11 +36,11 @@ bool Interface::getEstado() const {
 }
 
 void Interface::perdeuJogo() {
-    textoPerdeu.setString(L"Você perdeu.\nPontuação total: " + std::to_wstring(pontos) + L"\nPressione ENTER para recomeçar:");
+    textoPerdeu.setString(L"Você perdeu.\nPontuação total: " + std::to_wstring(estadoJogadorPtr->getPontos()) + L"\nPressione ENTER para recomeçar:");
 }
 
 void Interface::restaurar() {
-    if(vidas == 0) vidas = 3;
+    if(estadoJogadorPtr->getVidas() == 0) estadoJogadorPtr->setVidas(3);
     setPontuacao(Tipo::Reset);
     textoPerdeu.setString(L"");
     setTravar(0);
@@ -50,27 +49,49 @@ void Interface::restaurar() {
 void Interface::setPontuacao(const Tipo tipo) {
     switch (tipo) {
         case Tipo::Circulo:
-        pontos += 10;
+        estadoJogadorPtr->setPontos(estadoJogadorPtr->getPontos()+10);
         break;
         case Tipo::Quadrado:
-        pontos += 20;
+        estadoJogadorPtr->setPontos(estadoJogadorPtr->getPontos()+20);
         break;
         case Tipo::Triangulo:
-        pontos += 40;
+        estadoJogadorPtr->setPontos(estadoJogadorPtr->getPontos()+40);
         break;
         case Tipo::Reset:
-        pontos = 0;
+        estadoJogadorPtr->setPontos(0);
         break;
     }
-    textoPontos.setString("Pontos: " + std::to_string(pontos));
-    if(pontos != 0 && pontos % 1500 == 0 && vidas < 3 && vidas != 0) {
-        textoVidas.setString("Vidas: " + std::to_string(++vidas));
+    textoPontos.setString("Pontos: " + std::to_string(estadoJogadorPtr->getPontos()));
+    if(estadoJogadorPtr->getPontos() != 0 && estadoJogadorPtr->getPontos() % 1500 == 0 && estadoJogadorPtr->getVidas() < 3 && estadoJogadorPtr->getVidas() != 0) {
+        estadoJogadorPtr->setVidas(estadoJogadorPtr->getVidas()+1);
     }
 }
 
 void Interface::updateVidas() {
-    if(vidas > 0) --vidas;
-    textoVidas.setString("Vidas: " + std::to_string(vidas));
+    if(estadoJogadorPtr->getVidas() > 0) estadoJogadorPtr->setVidas(estadoJogadorPtr->getVidas()-1);
+    textoVidas.setString("Vidas: " + std::to_string(estadoJogadorPtr->getVidas()));
+}
+
+void Interface::atualizarProjeteis() {
+    gerenciadorProjeteisPtr->atualizarProjeteis();
+}
+
+void Interface::atualizarColisoes() {
+    // Jogador acerta alguém
+    for(auto &linhaAlien: gerenciadorAliensPtr->getGridAliens()) { {
+        for(auto &alien: linhaAlien) {
+            for(auto &it: gerenciadorProjeteisPtr->getBalasJogador())
+                if(alien.checarColisao(it)) {
+                    alien.morte();
+                    it.setRemover(true);
+                }
+            }
+        }
+    }
+    // Jogador é atingido
+    /*
+        iterar por cada bala e acionar morte e iniciar sistema de morte
+    */
 }
 
 bool Interface::getTravar() const {
@@ -81,49 +102,43 @@ void Interface::setTravar(bool estado) {
     travar = estado;
 }
 
-void Interface::eventos(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
-    if(travar && vidas > 0) {
-        if(jogador.animacaoConcluida()) {
-            restaurar();
-            jogador.restaurarJogador();
-            gerenciadorInimigos.restaurarPosicoes();
-        }
-    }
+void Interface::eventos() {
     janela.handleEvents(
         [this](const sf::Event::Closed) { janela.close(); },
-        [this, &jogador, &gerenciadorInimigos](const sf::Event::KeyPressed tecla) {
+        [this](const sf::Event::KeyPressed tecla) {
             if(tecla.scancode == sf::Keyboard::Scancode::Escape) janela.close();
-            if(tecla.scancode == sf::Keyboard::Scancode::Enter && travar) {
-                if((jogador.animacaoConcluida())) {
-                    restaurar();
-                    jogador.restaurarJogador();
-                    setVidas(3);
-                    textoVidas.setString("Vidas: " + std::to_string(vidas));
-                    gerenciadorInimigos.restaurarPosicoes();
-                }
-            }
 
             if(!travar) {
-                if(tecla.scancode == sf::Keyboard::Scancode::Left) jogador.mover(Direcao::Esquerda);
-                if(tecla.scancode == sf::Keyboard::Scancode::Right) jogador.mover(Direcao::Direita);
-                if(tecla.scancode == sf::Keyboard::Scancode::Space) jogador.atirar();
+                if(tecla.scancode == sf::Keyboard::Scancode::Left) {
+                    if(jogadorPtr->getSprite().getGlobalBounds().position.x > recursoManagerPtr->getLimitesTela()[Direcao::Esquerda]) {
+                        jogadorPtr->mover(Direcao::Esquerda);
+                    }
+                }
+                if(tecla.scancode == sf::Keyboard::Scancode::Right) {
+                    if(jogadorPtr->getPosicao().x + jogadorPtr->getSprite().getGlobalBounds().size.x/2.f < recursoManagerPtr->getLimitesTela()[Direcao::Direita]){
+                        jogadorPtr->mover(Direcao::Direita);
+                    }
+                }
+                if(tecla.scancode == sf::Keyboard::Scancode::Space) {
+                    gerenciadorProjeteisPtr->atirarJogador(jogadorPtr->getPosicao());
+                }
             }
         }
     );
 }
 
-void Interface::desenhar(Jogador &jogador, GerenciadorInimigos &gerenciadorInimigos) {
+void Interface::desenhar() {
     janela.clear();
     janela.draw(textoVidas);
     janela.draw(textoPontos);
-    if(jogador.animacaoConcluida() && travar && vidas == 0) {
-        perdeuJogo();
-        janela.draw(textoPerdeu);
+    janela.draw(jogadorPtr->getSprite());
+    for(const auto &linhaAlien: gerenciadorAliensPtr->getGridAliens()) {
+        for(const auto &alien: linhaAlien) {
+            if(alien.getEstado() == Estado::Vivo) janela.draw(alien.getSprite());
+        }
+
     }
-    janela.draw(jogador.getSprite());
-    for(const auto& bala: jogador.getBalas()) {
-        janela.draw(bala.getForma());
-    }
-    gerenciadorInimigos.desenhar(janela);
+    for(const auto &bala: gerenciadorProjeteisPtr->getBalasJogador()) janela.draw(bala.getForma());
+    for(const auto &bala: gerenciadorProjeteisPtr->getBalasAlien()) janela.draw(bala.getSprite());
     janela.display();
 }
