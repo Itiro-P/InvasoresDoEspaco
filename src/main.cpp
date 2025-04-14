@@ -11,7 +11,7 @@ int main() {
     RecursoManager recursoManager;
     GerenciadorAliens gerenciadorAliens(recursoManager);
     GerenciadorProjeteis gerenciadorProjeteis(recursoManager.getEscala(), recursoManager.getVelocidadeBalas(), recursoManager.getResolucaoSistema());
-    Jogador jogador(recursoManager.getPosSpritesJogador()[0], recursoManager.getPosicaoInicialJogador(), recursoManager.getTamanhoSprite(), recursoManager.getEscala(), recursoManager.getVelocidade());
+    Jogador jogador(recursoManager.getPosSpritesJogador().front(), recursoManager.getPosicaoInicialJogador(), recursoManager.getTamanhoSprite(), recursoManager.getEscala(), recursoManager.getVelocidade());
     EstadoJogador estadoJogador;
 
     Interface interface(recursoManager, gerenciadorAliens, gerenciadorProjeteis, jogador, estadoJogador);

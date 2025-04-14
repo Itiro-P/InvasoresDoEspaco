@@ -29,6 +29,8 @@ Interface::Interface(RecursoManager &recursoManager, GerenciadorAliens &gerencia
     textoPerdeu.setCharacterSize(static_cast<unsigned int>(recursoManagerPtr->getResolucaoSistema().x / 40));
     textoPerdeu.setOrigin(textoPerdeu.getGlobalBounds().size / 2.f);
     textoPerdeu.setPosition(sf::Vector2f{recursoManagerPtr->getResolucaoSistema().x / 2.f, 10.f});
+
+    relogio.start();
 }
 
 bool Interface::getEstado() const {
@@ -129,6 +131,10 @@ void Interface::eventos() {
 
 void Interface::desenhar() {
     janela.clear();
+    if(relogio.getElapsedTime().asSeconds() > 1.f) {
+        gerenciadorAliensPtr->moverGrid();
+        relogio.restart();
+    }
     janela.draw(textoVidas);
     janela.draw(textoPontos);
     janela.draw(jogadorPtr->getSprite());

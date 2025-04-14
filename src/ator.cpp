@@ -37,7 +37,6 @@ void Alien::mover(const sf::Vector2f &deslocamento) {
 
 void Alien::morte() {
     estado = Estado::Morrendo;
-    
 }
 
 void Alien::restaurar() {

@@ -44,19 +44,22 @@ void GerenciadorAliens::moverGrid()
     spriteAtual = (spriteAtual == 1 ? 0 : 1);
     for (auto& linha : gridAliens) {
         for (auto& alien : linha) {
-            if (alien.getEstado() == Estado::Vivo) {
-                alien.mover(deslocamento);
-                alien.setSpriteAtual(recursoManagerPtr->getPosSpritesAliens()[alien.getTipo()][spriteAtual]);
-            }
-            else if(alien.getEstado() == Estado::Morrendo) {
-                alien.setSpriteAtual(recursoManagerPtr->getPosSpritesAliens()[alien.getTipo()][2]);
-                alien.setEstado(Estado::Morto);
-                --aliensVivos;
+            switch(alien.getEstado()) {
+                case Estado::Vivo:
+                    alien.mover(deslocamento);
+                    alien.setSpriteAtual(recursoManagerPtr->getPosSpritesAliens()[alien.getTipo()][spriteAtual]);
+                    break;
+                case Estado::Morrendo:
+                    alien.setSpriteAtual(recursoManagerPtr->getPosSpritesAliens()[alien.getTipo()][2]);
+                    alien.setEstado(Estado::Morto);
+                    break;
+                case Estado::Morto:
+                    --aliensVivos;
+                    break;
             }
         }
     }
 }
-
 
 void GerenciadorAliens::restaurarGrid() {
     contadorBalas = 0;
@@ -74,7 +77,6 @@ void GerenciadorAliens::restaurarGrid() {
     posTopoEsquerdoX = gridAliens.front().front().getPosicao().x;
     posTopoEsquerdoY = gridAliens.front().front().getPosicao().y;
 }
-
 /*
 void GerenciadorAliens::atirar() {
     if (aliensVivos == 0) return;

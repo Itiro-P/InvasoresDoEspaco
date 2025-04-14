@@ -17,6 +17,7 @@ class Interface {
     std::unique_ptr<Jogador> jogadorPtr = nullptr;
     std::unique_ptr<EstadoJogador> estadoJogadorPtr = nullptr;
     sf::RenderWindow janela;
+    sf::Clock relogio;
     sf::Image icone;
     sf::Font fonte;
     sf::Text textoVidas;
