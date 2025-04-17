@@ -4,8 +4,6 @@
 #include <recursoManager.hpp>
 #include <gerenciadorProjeteis.hpp>
 #include <string>
-#include <SFML/Audio.hpp>
-#include <SFML/System.hpp>
 
 int main() {
     RecursoManager recursoManager;
